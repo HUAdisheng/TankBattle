@@ -1,19 +1,31 @@
 #include "FirstScene.h"
-
+#include"HelloWorldScene.h"
 USING_NS_CC;
-
 Scene* FirstScene::createScene()
 {
     return FirstScene::create();
 }
-
 // Print useful error message instead of segfaulting when files are not there.
 static void problemLoading(const char* filename)
 {
     printf("Error while loading: %s\n", filename);
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
-
+void FirstScene::replace1(Ref* psender)
+{
+    auto hello = HelloWorld::createScene();
+    TransitionFade* trs = TransitionFade::create(1.0, hello);
+    Director::getInstance()->replaceScene(trs);
+    return;
+}
+void FirstScene::button1Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
+{
+    if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
+    {
+        replace1(ref);
+    }
+    return;
+}
 // on "init" you need to initialize your instance
 bool FirstScene::init()
 {
@@ -26,7 +38,27 @@ bool FirstScene::init()
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
+    auto label1 = Label::createWithTTF("new adventure:)", "fonts/Marker Felt.ttf", 24);
+    if (label1 == nullptr)
+    {
+        problemLoading("'fonts/Marker Felt.ttf'");
+    }
+    else
+    {
+        // position the label on the center of the screen
+        label1->setPosition(Vec2(origin.x + visibleSize.width / 2,
+            origin.y + (visibleSize.height) / 2 - label1->getContentSize().height));
 
+        // add the label as a child to this layer
+        this->addChild(label1, 1);
+    }
+
+    auto button1 = ui::Button::create("defaultbutton_normal.png", "defaultbutton_normal.png", "disabled_image.png");
+    button1->setPosition(Vec2(origin.x + (visibleSize.width / 2) - (label1->getContentSize().width / 2) - 30,
+        origin.y + (visibleSize.height) / 2 - label1->getContentSize().height));
+    button1->setPressedActionEnabled(true);
+    button1->addTouchEventListener(CC_CALLBACK_2(FirstScene::button1Callback, this));
+    this->addChild(button1, 1);
     ///////////////////////////////
     //// 2. add a menu item with "X" image, which is clicked to quit the program
     ////    you may modify it.
@@ -61,20 +93,8 @@ bool FirstScene::init()
 
     // create and initialize a label
 
-    auto label = Label::createWithTTF("new adventure:)", "fonts/Marker Felt.ttf", 24);
-    if (label == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        label->setPosition(Vec2(origin.x + visibleSize.width / 2,
-            origin.y + (visibleSize.height)/2 - label->getContentSize().height - label->getContentSize().height));
 
-        // add the label as a child to this layer
-        this->addChild(label, 1);
-    }
+
 
     // add "HelloWorld" splash screen"
     //auto sprite = Sprite::create("HelloWorld.png");
@@ -106,3 +126,4 @@ void FirstScene::menuCloseCallback(Ref* pSender)
 
 
 }
+

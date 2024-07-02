@@ -80,4 +80,12 @@
       <UniqueIdentifier>{F784E845-FB62-35FB-AE25-C6EB7311E28F}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\defaultbutton_normal.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\defaultbutton_seleted.png">
+      <Filter>Resources</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

@@ -912,6 +912,10 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <Name>external</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\defaultbutton_normal.png" />
+    <Image Include="Resources\defaultbutton_seleted.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -46,7 +46,109 @@ mindmap
 #### 技术实现 
 - 游戏引擎：coco2dx
 - 编程语言：C++
-### 3、项目阶段 
+### 3、项目架构图
+```mermaid
+classDiagram
+    class Game {
+      +start()
+      +end()
+    }
+    class Map {
+      -size
+      -obstacles
+      +loadMap()
+    }
+    class Tank {
+      -position
+      -health
+      +move()
+      +fire()
+    }
+    class Player {
+      -name
+      -score
+    }
+    class Enemy extends Tank {
+      +patrol()
+      +attack()
+    }
+    class Projectile {
+      -speed
+      -damage
+      +move()
+    }
+    class PowerUp {
+      -type
+      +activate()
+    }
+    Game --> "1" Map : Contains
+    Map --> "*" Tank : Contains
+    Tank <|-- Player : Inherits
+    Tank <|-- Enemy : Inherits
+    Tank --> "*" Projectile : Fires
+    Map --> "*" PowerUp : Contains
+```
+#### (1). Game（游戏）
+- **方法**:
+  - `start()`: 开始游戏
+  - `end()`: 结束游戏
+- **关系**:
+  - 包含一个地图（Map）对象。
+
+#### (2) Map（地图）
+- **属性**:
+  - `size`: 地图的尺寸
+  - `obstacles`: 障碍物
+- **方法**:
+  - `loadMap()`: 加载地图
+- **关系**:
+  - 包含多个坦克（Tank）和多个增强道具（PowerUp）。
+
+#### (3) Tank（坦克）
+- **属性**:
+  - `position`: 坦克的位置
+  - `health`: 坦克的健康状况
+- **方法**:
+  - `move()`: 移动
+  - `fire()`: 开火
+- **关系**:
+  - 是玩家（Player）和敌人（Enemy）的基类。
+  - 发射多个炮弹（Projectile）。
+
+#### (4) Player（玩家）
+- **属性**:
+  - `name`: 名字
+  - `score`: 得分
+- **关系**:
+  - 继承自坦克类（Tank）。
+
+#### (5) Enemy（敌人）
+- **方法**:
+  - `patrol()`: 巡逻
+  - `attack()`: 攻击
+- **关系**:
+  - 也是坦克类（Tank）的一种具体实现。
+
+#### (6) Projectile（炮弹）
+- **属性**:
+  - `speed`: 速度
+  - `damage`: 伤害
+- **方法**:
+  - `move()`: 移动
+
+#### (7) PowerUp（增强道具）
+- **属性**:
+  - `type`: 类型
+- **方法**:
+  - `activate()`: 激活
+
+### 关系细节
+- `Game --> '1' Map : Contains` 表示游戏包含一个地图。
+- `Map --> '*' Tank : Contains` 表示地图中包含多个坦克。
+- `Tank <|-- Player : Inherits` 和 `Tank <|-- Enemy : Inherits` 表示玩家和敌人都是坦克的一种，它们继承自坦克类。
+- `Tank --> '*' Projectile : Fires` 表示坦克能发射多个炮弹。
+- `Map --> '*' PowerUp : Contains` 表示地图中包含多个增强道具。
+### 4、项目阶段 
 
 ```mermaid
 gantt

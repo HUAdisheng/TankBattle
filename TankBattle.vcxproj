@@ -913,8 +913,13 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Resources\background_first.png" />
     <Image Include="Resources\defaultbutton_normal.png" />
     <Image Include="Resources\defaultbutton_seleted.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Resources\sound\normal_happy.mp3" />
+    <Media Include="Resources\sound\tense.mp3" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

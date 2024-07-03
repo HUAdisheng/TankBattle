@@ -87,5 +87,16 @@
     <Image Include="Resources\defaultbutton_seleted.png">
       <Filter>Resources</Filter>
     </Image>
+    <Image Include="Resources\background_first.png">
+      <Filter>Resources</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Resources\sound\normal_happy.mp3">
+      <Filter>Resources</Filter>
+    </Media>
+    <Media Include="Resources\sound\tense.mp3">
+      <Filter>Resources</Filter>
+    </Media>
   </ItemGroup>
 </Project>

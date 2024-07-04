@@ -22,6 +22,7 @@ public:
     void button8Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type);
     void button9Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type);
     void button10Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type);
+    void buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type);
     // implement the "static create()" method manually
     CREATE_FUNC(LevelSelected);
 };

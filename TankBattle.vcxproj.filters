@@ -96,6 +96,24 @@
     <Image Include="Resources\background_first.png">
       <Filter>Resources</Filter>
     </Image>
+    <Image Include="Resources\grass.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\pausemenu.PNG">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\SelectLbg.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\steel.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\wall.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\water.png">
+      <Filter>Resources</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Media Include="Resources\sound\normal_happy.mp3">

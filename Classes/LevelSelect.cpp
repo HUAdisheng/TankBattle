@@ -9,6 +9,7 @@ static void problemLoading(const char* filename)
     printf("Error while loading: %s\n", filename);
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
+//去1-10关
 void LevelSelected::button1Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
@@ -119,6 +120,18 @@ void LevelSelected::button10Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::Tou
     }
     return;
 }
+//返回主菜单
+void LevelSelected::buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
+{
+    if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
+    {
+        AudioEngine::stopAll();
+        auto hello = FirstScene::createScene();
+        TransitionFade* trs = TransitionFade::create(1.0, hello);
+        Director::getInstance()->replaceScene(trs);
+    }
+    return;
+}
 bool LevelSelected::init()
 {
     if (!Scene::init())
@@ -182,8 +195,6 @@ bool LevelSelected::init()
             origin.y + (visibleSize.height) / 2));
         button1->setPressedActionEnabled(true);
         button1->addTouchEventListener(CC_CALLBACK_2(LevelSelected::button1Callback, this));
-        if (stoi(s) < 1)
-        { button1->setBright(false); button1->setEnabled(false); }
         this->addChild(button1);
     
     
@@ -413,7 +424,29 @@ bool LevelSelected::init()
     this->addChild(button10);
     file.close();
 
-    
+    auto labelback = Label::createWithTTF("back", "fonts/Marker Felt.ttf", 60);
+    labelback->setTextColor(Color4B(Color3B(255, 255, 128)));
+    if (labelback == nullptr)
+    {
+        problemLoading("'fonts/Marker Felt.ttf'");
+    }
+    else
+    {
+        // position the label on the center of the screen
+        labelback->setPosition(Vec2(origin.x + (visibleSize.width / 5),
+            origin.y + visibleSize.height - labelback->getContentSize().height));
+
+        // add the label as a child to this layer
+        this->addChild(labelback);
+    }
+
+    auto buttonback = ui::Button::create("defaultbutton_normal.png", "defaultbutton_seleted.png", "disabled_image.png");
+    buttonback->setScale(visibleSize.width / buttonback->getContentSize().width / 21, visibleSize.height / buttonback->getContentSize().height / 16);
+    buttonback->setPosition(Vec2(origin.x + (visibleSize.width / 5)-labelback->getContentSize().width,
+        origin.y + visibleSize.height - labelback->getContentSize().height));
+    buttonback->setPressedActionEnabled(true);
+    buttonback->addTouchEventListener(CC_CALLBACK_2(LevelSelected::buttonbackCallback, this));
+    this->addChild(buttonback);
     
     
 }

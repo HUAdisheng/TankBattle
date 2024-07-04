@@ -918,6 +918,12 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <Image Include="Resources\background_first.png" />
     <Image Include="Resources\defaultbutton_normal.png" />
     <Image Include="Resources\defaultbutton_seleted.png" />
+    <Image Include="Resources\grass.png" />
+    <Image Include="Resources\pausemenu.PNG" />
+    <Image Include="Resources\SelectLbg.png" />
+    <Image Include="Resources\steel.png" />
+    <Image Include="Resources\wall.png" />
+    <Image Include="Resources\water.png" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="Resources\sound\normal_happy.mp3" />

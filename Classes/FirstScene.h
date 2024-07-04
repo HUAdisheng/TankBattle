@@ -2,6 +2,8 @@
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
 #include"AudioEngine.h"
+#include"LevelSelect.h"
+#include"HelloWorldScene.h"
 #include<iostream>
 #include<fstream>
 #include<string>
@@ -22,6 +24,9 @@ public:
     void buttontryCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type);
     void buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type);
     void buttonselectLCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type);
+    void buttoncontinueCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type);
+    void buttonhelpCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type);
+    void Pausemenu();
     // implement the "static create()" method manually
     CREATE_FUNC(FirstScene);
 };

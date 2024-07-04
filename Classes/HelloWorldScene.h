@@ -26,7 +26,16 @@
 #define __HELLOWORLD_SCENE_H__
 
 #include "cocos2d.h"
+#include "Bullet.h"
+#include"Tank.h"
 
+enum KeyState {
+    KEY_A_PRESSED,
+    KEY_S_PRESSED,
+    KEY_D_PRESSED,
+    KEY_W_PRESSED,
+    KEY_J_PRESSED,
+};
 class HelloWorld : public cocos2d::Scene
 {
 public:
@@ -35,10 +44,24 @@ public:
     virtual bool init();
     
     // a selector callback
-    void menuCloseCallback(cocos2d::Ref* pSender);
-    
+    void menuCloseCallback(cocos2d::Ref* pSender); 
     // implement the "static create()" method manually
+    void Fire(cocos2d::Vec2 origin, float angle, float speed);
+
+    virtual void update(float delta);
+
+    void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+
+    void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+    
     CREATE_FUNC(HelloWorld);
+    private:
+        Bullet* m_bullet;
+        float lastFireTime = 0.0f;
+        Tank* tank;
+        float delta;
+        KeyState ks;
+        std::map<cocos2d::EventKeyboard::KeyCode, bool>Keystate;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

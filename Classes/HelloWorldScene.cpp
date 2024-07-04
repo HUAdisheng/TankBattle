@@ -26,6 +26,29 @@
 
 USING_NS_CC;
 
+Vec2 calculation(Tank* tank) {
+    auto newPosition = tank->getPosition();
+    auto r = tank->getRotation();
+    auto size = tank->getContentSize();
+    auto offset = tank->getScale()* size.height /2;
+    if (r == 0.0f) {
+        newPosition += Vec2(0, offset);
+    }
+    if (r == 180.0f) {
+        newPosition -= Vec2(0, offset);
+    }
+    if (r == 90.0f) {
+        newPosition += Vec2(offset, 0);
+    }
+    if (r == -90.0f) {
+        newPosition -= Vec2(offset, 0);
+    }
+    return newPosition;
+}
+
+
+
+
 Scene* HelloWorld::createScene()
 {
     return HelloWorld::create();
@@ -93,30 +116,54 @@ bool HelloWorld::init()
     else
     {
         // position the label on the center of the screen
-        label->setPosition(Vec2(origin.x + visibleSize.width/2,
-                                origin.y + visibleSize.height - label->getContentSize().height));
+        label->setPosition(Vec2(origin.x + visibleSize.width / 2,
+            origin.y + visibleSize.height - label->getContentSize().height));
 
         // add the label as a child to this layer
         this->addChild(label, 1);
     }
 
     // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("HelloWorld.png");
-    if (sprite == nullptr)
+   
+   
+    tank = Tank::create("1.png");
+    if (tank == nullptr)
     {
-        problemLoading("'HelloWorld.png'");
+        problemLoading("'1.png'");
     }
     else
     {
         // position the sprite on the center of the screen
-        sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
+        tank->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 
         // add the sprite as a child to this layer
-        this->addChild(sprite, 0);
+        this->addChild(tank, 0);
     }
+    tank->setScale(4);
+    
+    m_bullet = NULL;
+    auto listener = EventListenerKeyboard::create();
+    listener->onKeyPressed = CC_CALLBACK_2(HelloWorld::onKeyPressed, this);
+    listener->onKeyReleased = CC_CALLBACK_2(HelloWorld::onKeyReleased, this);
+
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+
+    HelloWorld::scheduleUpdate();
     return true;
 }
-
+void HelloWorld::Fire(cocos2d::Vec2 origin, float angle, float speed) {
+        if (cocos2d::Director::getInstance()->getTotalFrames()/60 - lastFireTime>=1.0f) {
+          m_bullet = Bullet::create("bullet.png");
+          if (m_bullet == nullptr){
+     
+                problemLoading("'bullet.png'");
+            }
+                this->addChild(m_bullet);
+                
+            m_bullet->shootFrom(origin,angle, speed);
+        }
+        lastFireTime = cocos2d::Director::getInstance()->getTotalFrames() / 60;
+}
 
 void HelloWorld::menuCloseCallback(Ref* pSender)
 {
@@ -129,4 +176,80 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
     //_eventDispatcher->dispatchEvent(&customEndEvent);
 
 
+}
+void HelloWorld::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
+    Keystate[keyCode] = true;
+    switch (keyCode) {
+    case cocos2d::EventKeyboard::KeyCode::KEY_A:
+        ks = KEY_A_PRESSED;
+        tank->setRotation(-90.0f);
+        break;
+    case cocos2d::EventKeyboard::KeyCode::KEY_S:
+        ks = KEY_S_PRESSED;
+        tank->setRotation(180.0f);
+        break;
+    case cocos2d::EventKeyboard::KeyCode::KEY_D:
+        ks = KEY_D_PRESSED;
+        tank->setRotation(90.0f);
+        break;
+    case cocos2d::EventKeyboard::KeyCode::KEY_W:
+        ks = KEY_W_PRESSED;
+        tank->setRotation(0.0f);
+        break;
+    case cocos2d::EventKeyboard::KeyCode::KEY_J:
+        this->Fire(calculation(tank), -tank->getRotation() + 90.0f, 1000);
+        break;
+    defalut:
+        auto rotateBy = RotateBy::create(delta, 0.0f);
+        tank->runAction(rotateBy);
+        break;
+    }
+}
+void HelloWorld::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
+    Keystate[keyCode] = false;
+    if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_A]) {
+        tank->setRotation(-90.0f);
+        ks = KEY_A_PRESSED;
+    }
+    else if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_S]) {
+        tank->setRotation(180.0f);
+        ks = KEY_S_PRESSED;
+    }
+    else if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_D]) {
+        tank->setRotation(90.0f);
+        ks = KEY_D_PRESSED;
+    }
+    else if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_W]) {
+        tank->setRotation(0.0f);
+        ks = KEY_W_PRESSED;
+    }
+}
+
+void HelloWorld::update(float delta) {
+    this->delta = delta;
+    if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_A] == false &&
+        Keystate[cocos2d::EventKeyboard::KeyCode::KEY_S] == false &&
+        Keystate[cocos2d::EventKeyboard::KeyCode::KEY_D] == false &&
+        Keystate[cocos2d::EventKeyboard::KeyCode::KEY_W] == false)
+    {
+        tank->stopmoving();
+    }
+    else {
+        switch (ks) {
+        case KEY_A_PRESSED:
+            tank->moveleft();
+            break;
+        case KEY_S_PRESSED:
+            tank->movedown();
+            break;
+        case KEY_D_PRESSED:
+            tank->moveright();
+            break;
+        case KEY_W_PRESSED:
+            tank->moveup();
+            break;
+        }
+    }
+
+    tank->update(delta);
 }

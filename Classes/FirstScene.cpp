@@ -1,4 +1,5 @@
 #include "FirstScene.h"
+#include "MapLayer.h"
 USING_NS_CC;
 Scene* FirstScene::createScene()
 {
@@ -104,7 +105,7 @@ void FirstScene::event_gameover()//游戏失败
 //去关卡1
 void FirstScene::replace1(Ref *psender)//跳转到第一个map
 {
-    auto hello = HelloWorld::createScene();
+    auto hello = MapLayer::createScene();
     TransitionFade* trs = TransitionFade::create(1.0, hello);
     Director::getInstance()->replaceScene(trs);
     return;

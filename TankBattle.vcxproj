@@ -835,12 +835,14 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="Classes\AppDelegate.cpp" />
     <ClCompile Include="Classes\FirstScene.cpp" />
     <ClCompile Include="Classes\HelloWorldScene.cpp" />
+    <ClCompile Include="Classes\LevelSelect.cpp" />
     <ClInclude Include="C:\TankBattle\TankBattle\proj.win32\main.h" />
     <ClInclude Include="C:\TankBattle\TankBattle\proj.win32\resource.h" />
     <ClCompile Include="C:\TankBattle\TankBattle\proj.win32\main.cpp" />
     <ClInclude Include="Classes\AppDelegate.h" />
     <ClInclude Include="Classes\FirstScene.h" />
     <ClInclude Include="Classes\HelloWorldScene.h" />
+    <ClInclude Include="Classes\LevelSelect.h" />
     <ResourceCompile Include="C:\TankBattle\TankBattle\proj.win32\game.rc" />
     <ClInclude Include="C:\TankBattle\TankBattle\Resources\CloseNormal.png" />
     <ClInclude Include="C:\TankBattle\TankBattle\Resources\CloseSelected.png" />

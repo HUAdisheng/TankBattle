@@ -442,13 +442,13 @@ bool FirstScene::init()
     button2->addTouchEventListener(CC_CALLBACK_2(FirstScene::button2Callback, this));
     this->addChild(button2);
 
-    auto button3 = ui::Button::create("defaultbutton_normal.png", "defaultbutton_seleted.png", "disabled_image.png");//TEST
-    button3->setPosition(Vec2(origin.x + (visibleSize.width / 2) - (label1->getContentSize().width / 2) - button3->getContentSize().width,
-        origin.y ));
-    button3->setScale(visibleSize.width / button3->getContentSize().width / 21, visibleSize.height / button3->getContentSize().height / 16);
-    button3->setPressedActionEnabled(true);
-    button3->addTouchEventListener(CC_CALLBACK_2(FirstScene::button3Callback, this));
-    this->addChild(button3);
+    //auto button3 = ui::Button::create("defaultbutton_normal.png", "defaultbutton_seleted.png", "disabled_image.png");//TEST
+    //button3->setPosition(Vec2(origin.x + (visibleSize.width / 2) - (label1->getContentSize().width / 2) - button3->getContentSize().width,
+    //    origin.y ));
+    //button3->setScale(visibleSize.width / button3->getContentSize().width / 21, visibleSize.height / button3->getContentSize().height / 16);
+    //button3->setPressedActionEnabled(true);
+    //button3->addTouchEventListener(CC_CALLBACK_2(FirstScene::button3Callback, this));
+    //this->addChild(button3);
 
     auto buttonselectL = ui::Button::create("defaultbutton_normal.png", "defaultbutton_seleted.png", "disabled_image.png");//SelecLevel
     buttonselectL->setPosition(Vec2(origin.x + (visibleSize.width / 2) - (label1->getContentSize().width / 2) - buttonselectL->getContentSize().width,

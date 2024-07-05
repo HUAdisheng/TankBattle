@@ -19,6 +19,15 @@
     <ClCompile Include="Classes\LevelSelect.cpp">
       <Filter>Source Files\Classes</Filter>
     </ClCompile>
+    <ClCompile Include="Classes\Bullet.cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Classes\Level1_1.cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Classes\Tank .cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\TankBattle\TankBattle\proj.win32\main.h">
@@ -55,6 +64,15 @@
       <Filter>Source Files\Classes</Filter>
     </ClInclude>
     <ClInclude Include="Classes\LevelSelect.h">
+      <Filter>Source Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Classes\Bullet.h">
+      <Filter>Source Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Classes\Level1_1.h">
+      <Filter>Source Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Classes\Tank.h">
       <Filter>Source Files\Classes</Filter>
     </ClInclude>
   </ItemGroup>
@@ -112,6 +130,27 @@
       <Filter>Resources</Filter>
     </Image>
     <Image Include="Resources\water.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\tank.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\boom_1.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\boom_2.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\boom_3.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\boom_4.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\boom_5.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\bullet.png">
       <Filter>Resources</Filter>
     </Image>
   </ItemGroup>

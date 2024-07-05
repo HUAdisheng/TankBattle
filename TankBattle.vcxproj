@@ -833,16 +833,22 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Classes\AppDelegate.cpp" />
+    <ClCompile Include="Classes\Bullet.cpp" />
     <ClCompile Include="Classes\FirstScene.cpp" />
     <ClCompile Include="Classes\HelloWorldScene.cpp" />
+    <ClCompile Include="Classes\Level1_1.cpp" />
     <ClCompile Include="Classes\LevelSelect.cpp" />
+    <ClCompile Include="Classes\Tank .cpp" />
     <ClInclude Include="C:\TankBattle\TankBattle\proj.win32\main.h" />
     <ClInclude Include="C:\TankBattle\TankBattle\proj.win32\resource.h" />
     <ClCompile Include="C:\TankBattle\TankBattle\proj.win32\main.cpp" />
     <ClInclude Include="Classes\AppDelegate.h" />
+    <ClInclude Include="Classes\Bullet.h" />
     <ClInclude Include="Classes\FirstScene.h" />
     <ClInclude Include="Classes\HelloWorldScene.h" />
+    <ClInclude Include="Classes\Level1_1.h" />
     <ClInclude Include="Classes\LevelSelect.h" />
+    <ClInclude Include="Classes\Tank.h" />
     <ResourceCompile Include="C:\TankBattle\TankBattle\proj.win32\game.rc" />
     <ClInclude Include="C:\TankBattle\TankBattle\Resources\CloseNormal.png" />
     <ClInclude Include="C:\TankBattle\TankBattle\Resources\CloseSelected.png" />
@@ -916,12 +922,19 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\background_first.png" />
+    <Image Include="Resources\boom_1.png" />
+    <Image Include="Resources\boom_2.png" />
+    <Image Include="Resources\boom_3.png" />
+    <Image Include="Resources\boom_4.png" />
+    <Image Include="Resources\boom_5.png" />
+    <Image Include="Resources\bullet.png" />
     <Image Include="Resources\defaultbutton_normal.png" />
     <Image Include="Resources\defaultbutton_seleted.png" />
     <Image Include="Resources\grass.png" />
     <Image Include="Resources\pausemenu.PNG" />
     <Image Include="Resources\SelectLbg.png" />
     <Image Include="Resources\steel.png" />
+    <Image Include="Resources\tank.png" />
     <Image Include="Resources\wall.png" />
     <Image Include="Resources\water.png" />
   </ItemGroup>

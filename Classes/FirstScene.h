@@ -4,6 +4,8 @@
 #include"AudioEngine.h"
 #include"LevelSelect.h"
 #include"HelloWorldScene.h"
+#include"Level1_1.h"
+#include"MapLayer.h"
 #include<iostream>
 #include<fstream>
 #include<string>

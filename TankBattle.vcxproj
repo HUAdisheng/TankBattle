@@ -832,9 +832,11 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Map\Classes\MapLayer.cpp" />
     <ClCompile Include="Classes\AppDelegate.cpp" />
     <ClCompile Include="Classes\FirstScene.cpp" />
     <ClCompile Include="Classes\HelloWorldScene.cpp" />
+    <ClInclude Include="..\Map\Classes\MapLayer.h" />
     <ClInclude Include="C:\TankBattle\TankBattle\proj.win32\main.h" />
     <ClInclude Include="C:\TankBattle\TankBattle\proj.win32\resource.h" />
     <ClCompile Include="C:\TankBattle\TankBattle\proj.win32\main.cpp" />

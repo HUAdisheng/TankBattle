@@ -1,43 +1,125 @@
-/****************************************************************************
- Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
- 
- http://www.cocos2d-x.org
- 
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
- 
- The above copyright notice and this permission notice shall be included in
- all copies or substantial portions of the Software.
- 
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- THE SOFTWARE.
- ****************************************************************************/
 
 #include "HelloWorldScene.h"
-
 USING_NS_CC;
-
+Vec2 HelloWorld::calculation(Tank* tank) {
+    auto newPosition = tank->getPosition();
+    auto r = tank->getRotation();
+    auto size = tank->getContentSize();
+    auto offset = tank->getScale() * size.height / 2;
+    if (r == 0.0f) {
+        newPosition += Vec2(0, offset);
+    }
+    if (r == 180.0f) {
+        newPosition -= Vec2(0, offset);
+    }
+    if (r == 90.0f) {
+        newPosition += Vec2(offset, 0);
+    }
+    if (r == -90.0f) {
+        newPosition -= Vec2(offset, 0);
+    }
+    return newPosition;
+}
 Scene* HelloWorld::createScene()
 {
     return HelloWorld::create();
 }
-
 // Print useful error message instead of segfaulting when files are not there.
 static void problemLoading(const char* filename)
 {
     printf("Error while loading: %s\n", filename);
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
+//related to tank
+void HelloWorld::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
+    Keystate[keyCode] = true;
+    switch (keyCode) {
+    case cocos2d::EventKeyboard::KeyCode::KEY_A:
+        ks = KEY_A_PRESSED;
+        tank->setRotation(-90.0f);
+        break;
+    case cocos2d::EventKeyboard::KeyCode::KEY_S:
+        ks = KEY_S_PRESSED;
+        tank->setRotation(180.0f);
+        break;
+    case cocos2d::EventKeyboard::KeyCode::KEY_D:
+        ks = KEY_D_PRESSED;
+        tank->setRotation(90.0f);
+        break;
+    case cocos2d::EventKeyboard::KeyCode::KEY_W:
+        ks = KEY_W_PRESSED;
+        tank->setRotation(0.0f);
+        break;
+    case cocos2d::EventKeyboard::KeyCode::KEY_J:
+        this->Fire(calculation(tank), -tank->getRotation() + 90.0f, 1000);
+        break;
+    defalut:
+        auto rotateBy = RotateBy::create(delta, 0.0f);
+        tank->runAction(rotateBy);
+        break;
+    }
+}
+void HelloWorld::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
+    Keystate[keyCode] = false;
+    if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_A]) {
+        tank->setRotation(-90.0f);
+        ks = KEY_A_PRESSED;
+    }
+    else if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_S]) {
+        tank->setRotation(180.0f);
+        ks = KEY_S_PRESSED;
+    }
+    else if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_D]) {
+        tank->setRotation(90.0f);
+        ks = KEY_D_PRESSED;
+    }
+    else if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_W]) {
+        tank->setRotation(0.0f);
+        ks = KEY_W_PRESSED;
+    }
+}
+void HelloWorld::update(float delta) {
+    this->delta = delta;
+    if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_A] == false &&
+        Keystate[cocos2d::EventKeyboard::KeyCode::KEY_S] == false &&
+        Keystate[cocos2d::EventKeyboard::KeyCode::KEY_D] == false &&
+        Keystate[cocos2d::EventKeyboard::KeyCode::KEY_W] == false)
+    {
+        tank->stopmoving();
+    }
+    else {
+        switch (ks) {
+        case KEY_A_PRESSED:
+            tank->moveleft();
+            break;
+        case KEY_S_PRESSED:
+            tank->movedown();
+            break;
+        case KEY_D_PRESSED:
+            tank->moveright();
+            break;
+        case KEY_W_PRESSED:
+            tank->moveup();
+            break;
+        }
+    }
 
+    //tank->update(delta);
+}
+//bullet fire
+void HelloWorld::Fire(cocos2d::Vec2 origin, float angle, float speed) {
+    if (cocos2d::Director::getInstance()->getTotalFrames() / 60 - lastFireTime >= 1.0f) {
+        m_bullet = Bullet::create("bullet3.png");
+        if (m_bullet == nullptr) {
+            problemLoading("'bullet3.png'");
+        }
+        this->addChild(m_bullet);
+        m_bullet->setAnchorPoint(Vec2(0.5, 0.1));
+        m_bullet->setRotation(90.0f - angle);
+        m_bullet->shootFrom(origin, angle, speed);
+    }
+    lastFireTime = cocos2d::Director::getInstance()->getTotalFrames() / 60;
+}
 // on "init" you need to initialize your instance
 bool HelloWorld::init()
 {
@@ -50,83 +132,94 @@ bool HelloWorld::init()
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
-
-    /////////////////////////////
-    // 2. add a menu item with "X" image, which is clicked to quit the program
-    //    you may modify it.
-
-    // add a "close" icon to exit the progress. it's an autorelease object
-    auto closeItem = MenuItemImage::create(
-                                           "CloseNormal.png",
-                                           "CloseSelected.png",
-                                           CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
-
-    if (closeItem == nullptr ||
-        closeItem->getContentSize().width <= 0 ||
-        closeItem->getContentSize().height <= 0)
+    //add tank below
+    tank = Tank::create("1.png");
+    if (tank == nullptr)
     {
-        problemLoading("'CloseNormal.png' and 'CloseSelected.png'");
-    }
-    else
-    {
-        float x = origin.x + visibleSize.width - closeItem->getContentSize().width/2;
-        float y = origin.y + closeItem->getContentSize().height/2;
-        closeItem->setPosition(Vec2(x,y));
-    }
-
-    // create menu, it's an autorelease object
-    auto menu = Menu::create(closeItem, NULL);
-    menu->setPosition(Vec2::ZERO);
-    this->addChild(menu, 1);
-
-    /////////////////////////////
-    // 3. add your codes below...
-
-    // add a label shows "Hello World"
-    // create and initialize a label
-
-    auto label = Label::createWithTTF("Hello World", "fonts/Marker Felt.ttf", 24);
-    if (label == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        label->setPosition(Vec2(origin.x + visibleSize.width/2,
-                                origin.y + visibleSize.height - label->getContentSize().height));
-
-        // add the label as a child to this layer
-        this->addChild(label, 1);
-    }
-
-    // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("HelloWorld.png");
-    if (sprite == nullptr)
-    {
-        problemLoading("'HelloWorld.png'");
+        problemLoading("'1.png'");
     }
     else
     {
         // position the sprite on the center of the screen
-        sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
+        tank->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 
         // add the sprite as a child to this layer
-        this->addChild(sprite, 0);
+        this->addChild(tank, 0);
     }
+    tank->setScale(4);
+    m_bullet = NULL;
+    //add keyboard listenser below
+    auto listener = EventListenerKeyboard::create();
+    listener->onKeyPressed = CC_CALLBACK_2(HelloWorld::onKeyPressed, this);
+    listener->onKeyReleased = CC_CALLBACK_2(HelloWorld::onKeyReleased, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+
+
+
+
+    HelloWorld::scheduleUpdate();
     return true;
 }
-
-
-void HelloWorld::menuCloseCallback(Ref* pSender)
+bool HelloWorld::willContact(Vec2 vec)
 {
-    //Close the cocos2d-x game scene and quit the application
-    Director::getInstance()->end();
+    // 获取坦克位置信息与尺寸
+    Rect rect = tank->getBoundingBox();
 
-    /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() as given above,instead trigger a custom event created in RootViewController.mm as below*/
+    //将坦克Y坐标转换为地图上的Y坐标
+    float MinY = rect.getMinY();
+    float MaxY = rect.getMaxY();
 
-    //EventCustom customEndEvent("game_scene_close_event");
-    //_eventDispatcher->dispatchEvent(&customEndEvent);
+    // 计算坦克的四顶点坐标
+    float MinX = rect.getMinX();
+    float MaxX = rect.getMaxX();
+
+    Vec2 point[4];
+    point[0] = Vec2(MinX + vec.x, MinY + vec.y);
+    point[1] = Vec2(MinX + vec.x, MaxY + vec.y);
+    point[2] = Vec2(MaxX + vec.x, MinY + vec.y);
+    point[3] = Vec2(MaxX + vec.x, MaxY + vec.y);
+    for (int i = 0; i < 4; i++) {
+        switch (getType(point[i])) {
+        case 1:
+            return true;
+        case 2:
+            return true;
+        case 3:
+            return true;
+        case 4:
+            return true;
+        case 5:
+            return true;
+        case 6:
+            return true;
+        default:
+            continue;
+        }
+    }
+    return false;
+}
+int HelloWorld::getType(Vec2 pos)
+{
+    float x = (pos.x - offsetX) / tileSize / scale;
+    float y = 12 - (pos.y - offsetY) / tileSize / scale;
+    int ix = (int)x;
+    int iy = (int)y;
 
 
+    switch (map[iy + 1][ix]) {
+    case 1:
+        return 1;
+    case 2:
+        return 2;
+    case 3:
+        return 3;
+    case 4:
+        return 4;
+    case 5:
+        return 5;
+    case 6:
+        return 6;
+    default:
+        return 0;
+    }
 }

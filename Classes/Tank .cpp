@@ -11,18 +11,17 @@ Tank* Tank::create(const std::string& TankImage) {
     CC_SAFE_DELETE(tank);
     return nullptr;
 }
-
 void Tank::movedown() {
-    vec = Vec2(0, -5.0f);
+    vec = Vec2(0, -2.5f);
 }
 void Tank::moveup() {
-    vec = Vec2(0, 5.0f);
+    vec = Vec2(0, 2.5f);
 }
 void Tank::moveleft() {
-    vec = Vec2(-5.0f, 0);
+    vec = Vec2(-2.5f, 0);
 }
 void Tank::moveright() {
-    vec = Vec2(5.0f, 0);
+    vec = Vec2(2.5f, 0);
 }
 void Tank::stopmoving() {
     vec = Vec2(0, 0);

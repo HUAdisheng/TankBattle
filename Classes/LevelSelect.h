@@ -2,7 +2,8 @@
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
 #include"AudioEngine.h"
-#include"FirstScene.h"
+#include"HelloWorldScene.h"
+#include"Level1_1.h"
 #include<iostream>
 #include<fstream>
 #include<string>

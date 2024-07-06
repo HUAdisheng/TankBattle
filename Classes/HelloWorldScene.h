@@ -26,59 +26,9 @@
 #define __HELLOWORLD_SCENE_H__
 
 #include "cocos2d.h"
-#include "Bullet.h"
-#include"Tank.h"
 
-enum KeyState {
-    KEY_A_PRESSED,
-    KEY_S_PRESSED,
-    KEY_D_PRESSED,
-    KEY_W_PRESSED,
-    KEY_J_PRESSED,
-};
-class HelloWorld : public cocos2d::Scene
-{
-public:
-    static cocos2d::Scene* createScene();
+#include "ui/CocosGUI.h"
+#include"AudioEngine.h"
 
-    virtual bool init();
-    //bullet and tank related
-    void Fire(cocos2d::Vec2 origin, float angle, float speed);
-    virtual void update(float delta);
-    void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
-    void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
-    Vec2 calculation(Tank* tank);
-    bool willContact(Vec2 vec);
-    int getType(Vec2 pos);
-    //
-    CREATE_FUNC(HelloWorld);
-    private:
-        Bullet* m_bullet;
-        float lastFireTime = 0.0f;
-        Tank* tank;
-        float delta;
-        KeyState ks;
-        std::map<cocos2d::EventKeyboard::KeyCode, bool>Keystate;
-       
-        float offsetX;
-        float offsetY;
-        int tileSize;
-        float scale;
-        int map[13][13] = {
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-        };
-};
 
 #endif // __HELLOWORLD_SCENE_H__

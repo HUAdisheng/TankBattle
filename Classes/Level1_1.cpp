@@ -4,6 +4,25 @@ Scene* Level1_1::createScene()
 {
     return Level1_1::create();
 }
+Vec2 Level1_1::calculation(Tank* tank) {
+    auto newPosition = tank->getPosition();
+    auto r = tank->getRotation();
+    auto size = tank->getContentSize();
+    auto offset = tank->getScale() * size.height / 2;
+    if (r == 0.0f) {
+        newPosition += Vec2(0, offset);
+    }
+    if (r == 180.0f) {
+        newPosition -= Vec2(0, offset);
+    }
+    if (r == 90.0f) {
+        newPosition += Vec2(offset, 0);
+    }
+    if (r == -90.0f) {
+        newPosition -= Vec2(offset, 0);
+    }
+    return newPosition;
+}
 static void problemLoading(const char* filename)
 {
     printf("Error while loading: %s\n", filename);
@@ -102,7 +121,6 @@ void Level1_1::Pausemenu()
 
 
 }
-
 //去选择关卡界面
 void Level1_1::buttonselectLCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
@@ -127,47 +145,122 @@ void Level1_1::buttoncontinueCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::To
     this->removeChildByTag(6);
     this->removeChildByTag(7);
 }
+//去主菜单
 void Level1_1::buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
     {
+        AudioEngine::stopAll();
         auto tryagain = FirstScene::createScene();
         TransitionFade* trs = TransitionFade::create(1.0, tryagain);
         Director::getInstance()->replaceScene(trs);
     }
     return;
 }
-void Level1_1::update(float delta) {
-    this->delta = delta;
-    bool staticFlag = false;
-    if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_A] == false &&
-        Keystate[cocos2d::EventKeyboard::KeyCode::KEY_S] == false &&
-        Keystate[cocos2d::EventKeyboard::KeyCode::KEY_D] == false &&
-        Keystate[cocos2d::EventKeyboard::KeyCode::KEY_W] == false)
-    {
-        tank->stopmoving();
+void Level1_1::Fire(cocos2d::Vec2 origin, float angle, float speed) {
+    if (cocos2d::Director::getInstance()->getTotalFrames() / 60 - lastFireTime >= 1.0f) {
+        m_bullet = Bullet::create("bullet.png");
+        if (m_bullet == nullptr) {
+
+            problemLoading("'bullet.png'");
+        }
+        this->addChild(m_bullet);
+
+        m_bullet->shootFrom(origin, angle, speed);
     }
-    else {
-        switch (ks) {
-        case KEY_A_PRESSED:
-            staticFlag = willContact(Vec2(-10.0f, 0));
-            tank->moveleft();
-            break;
-        case KEY_S_PRESSED:
-            staticFlag = willContact(Vec2(0, -10.0f));
-            tank->movedown();
-            break;
-        case KEY_D_PRESSED:
-            staticFlag = willContact(Vec2(10.0f, 0));
-            tank->moveright();
-            break;
-        case KEY_W_PRESSED:
-            staticFlag = willContact(Vec2(0, 10.0f));
-            tank->moveup();
-            break;
+    lastFireTime = cocos2d::Director::getInstance()->getTotalFrames() / 60;
+}
+int Level1_1::getType(Vec2 pos)
+{
+    float x = (pos.x - offsetX) / tileSize / scale;
+    float y = (mapy-1) - (pos.y - offsetY) / tileSize / scale;
+    if (y < 0)
+        y--;
+    if (x < 0)
+        x--;
+    int ix = (int)x;
+    int iy = (int)y; 
+    
+    switch (map[iy + 1][ix]) {
+    case 1:
+        return 1;
+    case 2:
+        return 2;
+    case 3:
+        return 3;
+    case 4:
+        return 4;
+    case 5:
+        return 5;
+    case 6:
+        return 6;
+    default:
+        return 0;
+    }
+}
+bool Level1_1::willContact(Vec2 vec)
+{
+    // 获取坦克位置信息与尺寸
+    Rect rect = tank->getBoundingBox();
+
+    //将坦克Y坐标转换为地图上的Y坐标
+    float MinY = rect.getMinY();
+    float MaxY = rect.getMaxY();
+
+    // 计算坦克的四顶点坐标
+    float MinX = rect.getMinX();
+    float MaxX = rect.getMaxX();
+
+    Vec2 point[4];
+    point[0] = Vec2(MinX + vec.x, MinY + vec.y);
+    point[1] = Vec2(MinX + vec.x, MaxY + vec.y);
+    point[2] = Vec2(MaxX + vec.x, MinY + vec.y);
+    point[3] = Vec2(MaxX + vec.x, MaxY + vec.y);
+    for (int i = 0; i < 4; i++) {
+        switch (getType(point[i])) {
+        case 1:
+            return true;
+        
+        case 3:
+            return true;
+        case 4:
+            return true;
+    
+        default:
+            continue;
         }
     }
-    tank->update(delta, staticFlag);
+    return false;
+}
+bool Level1_1::willContactTrap(Vec2 vec)
+{
+    // 获取坦克位置信息与尺寸
+    Rect rect = tank->getBoundingBox();
+
+    //将坦克Y坐标转换为地图上的Y坐标
+    float MinY = rect.getMinY();
+    float MaxY = rect.getMaxY();
+
+    // 计算坦克的四顶点坐标
+    float MinX = rect.getMinX();
+    float MaxX = rect.getMaxX();
+
+    Vec2 point[4];
+    point[0] = Vec2(MinX + vec.x, MinY + vec.y);
+    point[1] = Vec2(MinX + vec.x, MaxY + vec.y);
+    point[2] = Vec2(MaxX + vec.x, MinY + vec.y);
+    point[3] = Vec2(MaxX + vec.x, MaxY + vec.y);
+    for (int i = 0; i < 4; i++) {
+        switch (getType(point[i])) {
+        case 2:
+            tank->deletetank();
+            tank->setPosition(Vec2(2 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 4) * tileSize * scale + offsetY + tankHeight / 2));
+            return true;
+        default:
+            continue;
+        }
+    }
+    return false;
 }
 void Level1_1::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
     Keystate[keyCode] = true;
@@ -192,6 +285,7 @@ void Level1_1::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Ev
         this->Fire(calculation(tank), -tank->getRotation() + 90.0f, 1000);
         break;
     case cocos2d::EventKeyboard::KeyCode::KEY_P:
+        ks = KEY_P_PRESSED;
         Pausemenu();
         break;
     defalut:
@@ -219,33 +313,79 @@ void Level1_1::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::E
         ks = KEY_W_PRESSED;
     }
 }
+void Level1_1::update(float delta) {
+    this->delta = delta;
+    bool staticflag = false;
+    bool staticflag2 = false;
+    if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_A] == false &&
+        Keystate[cocos2d::EventKeyboard::KeyCode::KEY_S] == false &&
+        Keystate[cocos2d::EventKeyboard::KeyCode::KEY_D] == false &&
+        Keystate[cocos2d::EventKeyboard::KeyCode::KEY_W] == false)
+    {
+        tank->stopmoving();
+    }
+    else {
+        switch (ks) {
+        case KEY_A_PRESSED:
+            staticflag = willContact(Vec2( -2.5f, 0));
+            staticflag2 = willContactTrap(Vec2(0, 0));
+            tank->moveleft();
+            break;
+        case KEY_S_PRESSED:
+            staticflag = willContact(Vec2(0, -2.5f));
+            staticflag2 = willContactTrap(Vec2(0, 0));
+            tank->movedown();
+            break;
+        case KEY_D_PRESSED:
+            
+            staticflag = willContact(Vec2(2.5f, 0));
+            staticflag2 = willContactTrap(Vec2(0, 0));
+            tank->moveright();
+            break;
+        case KEY_W_PRESSED:
+            
+            staticflag = willContact(Vec2(0, 2.5f));
+            staticflag2 = willContactTrap(Vec2(0, 0));
+            tank->moveup();
+            break;
+        case KEY_P_PRESSED:
+            tank->stopmoving();
+            break;
+        }
+    }
+    
+    tank->update(delta,staticflag);
+    tank->stopmoving();
+    tank->update(delta, staticflag2);
+}
 bool Level1_1::init()
 {
     if (!Scene::init())
     {
         return false;
-    } 
+    }
+    auto background1=cocos2d::AudioEngine::play2d("DreamSpace.mp3", true,0.5f);
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
-    Sprite* physicsbody[13][13];
-    // 地图砖块的大小
+    Sprite* physicsbody[mapy][mapx];
+     //地图砖块的大小
     tileSize = 32;
-    // 获取窗口大小
+     //获取窗口大小
     auto winSize = Director::getInstance()->getVisibleSize();
-    // 计算地图总大小
+     //计算地图总大小
     int mapWidth = sizeof(map[0]) / sizeof(int) * tileSize;
     int mapHeight = sizeof(map) / sizeof(map[0]) * tileSize;
-    // 计算地图的缩放比例
+     //计算地图的缩放比例
     float scaleX = winSize.width / mapWidth;
     float scaleY = winSize.height / mapHeight;
      scale = MIN(scaleX, scaleY);
-     // 计算地图在窗口的中心位置
+      //计算地图在窗口的中心位置
      offsetX = (winSize.width - mapWidth * scale) / 2;
      offsetY = (winSize.height - mapHeight * scale) / 2;
-    // 渲染地图
-    for (int y = 0; y < 13; ++y)
+     //渲染地图
+    for (int y = 0; y < mapy; ++y)
     {
-        for (int x = 0; x < 13; ++x)
+        for (int x = 0; x < mapx; ++x)
         {
             physicsbody[y][x] = NULL;
             if (map[y][x] == 1) {
@@ -260,6 +400,9 @@ bool Level1_1::init()
             else if (map[y][x] == 4) {
                 physicsbody[y][x] = Sprite::create("grass.png");
             }
+            else if (map[y][x] == 5) {
+                physicsbody[y][x] = Sprite::create("road_white.png");
+            }
             else {
                 continue;
             }
@@ -267,7 +410,7 @@ bool Level1_1::init()
             if (physicsbody[y][x])
             {
                 physicsbody[y][x]->setScale(scale);
-                physicsbody[y][x]->setPosition(Vec2(x * tileSize * scale + offsetX, (12 - y) * tileSize * scale+offsetY));
+                physicsbody[y][x]->setPosition(Vec2(x * tileSize * scale + offsetX, (mapy-1 - y) * tileSize * scale+offsetY));
                 physicsbody[y][x]->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
                 this->addChild(physicsbody[y][x]);
             }
@@ -277,15 +420,15 @@ bool Level1_1::init()
     tank = Tank::create("tank.png");
     if (tank != nullptr)
     {
-        // position the sprite on the center of the screen
+         //position the sprite on the center of the screen
         tank->setScale(32 / 28);
         tank->setScale(scale);
-        // add the sprite as a child to this layer
+         //add the sprite as a child to this layer
         this->addChild(tank, 0);
         Rect rect = tank->getBoundingBox();
-        int tankWidth = rect.size.width;
-        int tankHeight = rect.size.height;
-        tank->setPosition(Vec2(1 * tileSize * scale + offsetX + tankWidth / 2, (12 - 12) * tileSize * scale + offsetY + tankHeight / 2));
+        tankWidth = rect.size.width;
+        tankHeight = rect.size.height;
+        tank->setPosition(Vec2(2 * tileSize * scale + offsetX + tankWidth / 2, (mapy-1 - 4) * tileSize * scale + offsetY + tankHeight / 2));
     }
     m_bullet = NULL;
     //add keyboard listenser below
@@ -296,66 +439,5 @@ bool Level1_1::init()
     Level1_1::scheduleUpdate();
     return true;
 }
-bool Level1_1::willContact(Vec2 vec)
-{
-    // 获取坦克位置信息与尺寸
-    Rect rect = tank->getBoundingBox();
 
-    //将坦克Y坐标转换为地图上的Y坐标
-    float MinY = rect.getMinY();
-    float MaxY = rect.getMaxY();
-
-    // 计算坦克的四顶点坐标
-    float MinX = rect.getMinX();
-    float MaxX = rect.getMaxX();
-
-    Vec2 point[4];
-    point[0] = Vec2(MinX + vec.x, MinY + vec.y);
-    point[1] = Vec2(MinX + vec.x, MaxY + vec.y);
-    point[2] = Vec2(MaxX + vec.x, MinY + vec.y);
-    point[3] = Vec2(MaxX + vec.x, MaxY + vec.y);
-    for (int i = 0; i < 4; i++) {
-        switch (getType(point[i])) {
-        case 1:
-            return true;
-        case 2:
-            return true;
-        case 3:
-            return true;
-        case 4:
-            return true;
-        case 5:
-            return true;
-        case 6:
-            return true;
-        default:
-            continue;
-        }
-    }
-    return false;
-}
-int Level1_1::getType(Vec2 pos)
-{
-    float x = (pos.x - offsetX) / tileSize / scale;
-    float y = 12 - (pos.y - offsetY) / tileSize / scale;
-    int ix = (int)x;
-    int iy = (int)y;
-
-
-    switch (map[iy + 1][ix]) {
-    case 1:
-        return 1;
-    case 2:
-        return 2;
-    case 3:
-        return 3;
-    case 4:
-        return 4;
-    case 5:
-        return 5;
-    case 6:
-        return 6;
-    default:
-        return 0;
-    }
-}
+//}

@@ -10,18 +10,6 @@ static void problemLoading(const char* filename)
     printf("Error while loading: %s\n", filename);
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
-//再来一次
-void FirstScene::buttontryCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
-{
-    if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
-    {
-        auto tryagain = FirstScene::createScene();
-        TransitionFade* trs = TransitionFade::create(1.0, tryagain);
-        Director::getInstance()->replaceScene(trs);
-    }
-    return;
-
-}
 //返回主菜单
 void FirstScene::buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
@@ -56,20 +44,6 @@ void FirstScene::event_gameover()//游戏失败
         this->addChild(label1);
     }
    
-    auto label2 = Label::createWithTTF("try again!", "fonts/Marker Felt.ttf", 60);
-    if (label2 == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        label2->setPosition(Vec2(origin.x + visibleSize.width / 2,
-            origin.y + (visibleSize.height) / 2 - label1->getContentSize().height ));
-
-        // add the label as a child to this layer
-        this->addChild(label2);
-    }
 
     auto label3 = Label::createWithTTF("go back to the start menu", "fonts/Marker Felt.ttf", 60);
     if (label3 == nullptr)
@@ -80,23 +54,15 @@ void FirstScene::event_gameover()//游戏失败
     {
         // position the label on the center of the screen
         label3->setPosition(Vec2(origin.x + visibleSize.width / 2,
-            origin.y + (visibleSize.height) / 2 - label1->getContentSize().height - label2->getContentSize().height));
+            origin.y + (visibleSize.height) / 2 - label1->getContentSize().height ));
 
         // add the label as a child to this layer
         this->addChild(label3);
     }
-    auto buttontry = ui::Button::create("defaultbutton_normal.png", "defaultbutton_seleted.png", "disabled_image.png");
-    buttontry->setScale(visibleSize.width / buttontry->getContentSize().width / 21, visibleSize.height / buttontry->getContentSize().height / 16);
-    buttontry->setPosition(Vec2(origin.x + (visibleSize.width / 2) - (label2->getContentSize().width / 2) - buttontry->getContentSize().width,
-        origin.y + (visibleSize.height) / 2 - label1->getContentSize().height));
-    buttontry->setPressedActionEnabled(true);
-    buttontry->addTouchEventListener(CC_CALLBACK_2(FirstScene::buttontryCallback, this));
-    this->addChild(buttontry);
-
     auto buttonback = ui::Button::create("defaultbutton_normal.png", "defaultbutton_seleted.png", "disabled_image.png");
     buttonback->setScale(visibleSize.width / buttonback->getContentSize().width / 21, visibleSize.height / buttonback->getContentSize().height / 16);
     buttonback->setPosition(Vec2(origin.x + (visibleSize.width / 2) - (label3->getContentSize().width / 2) - buttonback->getContentSize().width,
-        origin.y + (visibleSize.height) / 2 - label1->getContentSize().height-label2->getContentSize().height));
+        origin.y + (visibleSize.height) / 2 - label1->getContentSize().height));
     buttonback->setPressedActionEnabled(true);
     buttonback->addTouchEventListener(CC_CALLBACK_2(FirstScene::buttonbackCallback, this));
     this->addChild(buttonback);
@@ -472,4 +438,5 @@ void FirstScene::menuCloseCallback(Ref* pSender)
 
 
 }
+
 

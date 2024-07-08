@@ -168,3 +168,11 @@ gantt
     section 测试与部署
     游戏测试           :2024-7-16, 2024-7-16
 ```
+## 附：游戏截图
+<div align="center">
+  <img src="README.assets/1.png" width="500" height="500">
+  <img src="README.assets/2.png" width="500" height="500">
+  <img src="README.assets/3.png" width="500" height="500">
+  <img src="README.assets/4.png" width="500" height="500">
+</div>
+

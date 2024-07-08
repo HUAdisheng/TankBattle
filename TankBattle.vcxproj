@@ -928,17 +928,25 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <Image Include="Resources\boom_4.png" />
     <Image Include="Resources\boom_5.png" />
     <Image Include="Resources\bullet.png" />
+    <Image Include="Resources\chaser.png" />
     <Image Include="Resources\defaultbutton_normal.png" />
     <Image Include="Resources\defaultbutton_seleted.png" />
+    <Image Include="Resources\gold.png" />
     <Image Include="Resources\grass.png" />
+    <Image Include="Resources\passflag.png" />
     <Image Include="Resources\pausemenu.PNG" />
+    <Image Include="Resources\road_earth.png" />
     <Image Include="Resources\SelectLbg.png" />
     <Image Include="Resources\steel.png" />
     <Image Include="Resources\tank.png" />
+    <Image Include="Resources\thorn.png" />
     <Image Include="Resources\wall.png" />
     <Image Include="Resources\water.png" />
   </ItemGroup>
   <ItemGroup>
+    <Media Include="Resources\Dreams.mp3" />
+    <Media Include="Resources\DreamSpace.mp3" />
+    <Media Include="Resources\run.mp3" />
     <Media Include="Resources\sound\normal_happy.mp3" />
     <Media Include="Resources\sound\tense.mp3" />
   </ItemGroup>

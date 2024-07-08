@@ -153,12 +153,36 @@
     <Image Include="Resources\bullet.png">
       <Filter>Resources</Filter>
     </Image>
+    <Image Include="Resources\chaser.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\gold.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\passflag.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\road_earth.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\thorn.png">
+      <Filter>Resources</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Media Include="Resources\sound\normal_happy.mp3">
       <Filter>Resources</Filter>
     </Media>
     <Media Include="Resources\sound\tense.mp3">
+      <Filter>Resources</Filter>
+    </Media>
+    <Media Include="Resources\Dreams.mp3">
+      <Filter>Resources</Filter>
+    </Media>
+    <Media Include="Resources\DreamSpace.mp3">
+      <Filter>Resources</Filter>
+    </Media>
+    <Media Include="Resources\run.mp3">
       <Filter>Resources</Filter>
     </Media>
   </ItemGroup>

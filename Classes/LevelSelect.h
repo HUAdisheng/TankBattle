@@ -4,6 +4,7 @@
 #include"AudioEngine.h"
 #include"HelloWorldScene.h"
 #include"Level1_1.h"
+#include"Level2_1.h"
 #include<iostream>
 #include<fstream>
 #include<string>
@@ -11,7 +12,6 @@ class LevelSelected : public cocos2d::Scene
 {
 public:
     static cocos2d::Scene* createScene();
-
     virtual bool init();
     void button1Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type);
     void button2Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type);

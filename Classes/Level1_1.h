@@ -4,8 +4,7 @@
 #include "Bullet.h"
 #include"Tank.h"
 extern enum KeyState;
-const int mapy = 20;
-const int mapx = 26;
+
 class Level1_1 :
      public cocos2d::Scene
 {
@@ -27,6 +26,8 @@ public:
     bool willContactTrap(Vec2 vec);
     CREATE_FUNC(Level1_1);
 private:
+    int mapy = 20;
+    int mapx = 26;
     Bullet* m_bullet;
     EventListenerKeyboard* listener = EventListenerKeyboard::create();
     float lastFireTime = 0.0f;
@@ -40,7 +41,8 @@ private:
     float scale;
     float tankWidth;
     float tankHeight;
-    int map[mapy][mapx] = {
+    Sprite* physicsbody[20][26];
+    int map[20][26] = {
         {2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1,1,1,1,1,1,1,1,1,1,1,1,2},
         {2, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 2,5,5,5,5,5,5,5,5,5,5,5,5,1},
         {2, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 2, 5,1,1,1,1,1,5,5,5,5,5,5,5,1},

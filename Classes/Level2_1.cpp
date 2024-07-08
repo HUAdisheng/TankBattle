@@ -1,10 +1,10 @@
-#include "Level1_1.h"
+#include "Level2_1.h"
 USING_NS_CC;
-Scene* Level1_1::createScene()
+Scene* Level2_1::createScene()
 {
-    return Level1_1::create();
+    return Level2_1::create();
 }
-Vec2 Level1_1::calculation(Tank* tank) {
+Vec2 Level2_1::calculation(Tank* tank) {
     auto newPosition = tank->getPosition();
     auto r = tank->getRotation();
     auto size = tank->getContentSize();
@@ -28,7 +28,7 @@ static void problemLoading(const char* filename)
     printf("Error while loading: %s\n", filename);
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
-void Level1_1::Pausemenu()
+void Level2_1::Pausemenu()
 {
     listener->setEnabled(false);
     auto visibleSize = Director::getInstance()->getVisibleSize();
@@ -69,7 +69,7 @@ void Level1_1::Pausemenu()
     buttoncontinue->setPosition(Vec2(origin.x + (visibleSize.width / 2) - (labelcontinue->getContentSize().width / 2) - buttoncontinue->getContentSize().width,
         origin.y + (visibleSize.height) / 2 + 2 * labelcontinue->getContentSize().height));
     buttoncontinue->setPressedActionEnabled(true);
-    buttoncontinue->addTouchEventListener(CC_CALLBACK_2(Level1_1::buttoncontinueCallback, this));
+    buttoncontinue->addTouchEventListener(CC_CALLBACK_2(Level2_1::buttoncontinueCallback, this));
     this->addChild(buttoncontinue, 0, 2);
 
     auto labelselectL = Label::createWithTTF("select level", "fonts/Marker Felt.ttf", 60);
@@ -92,7 +92,7 @@ void Level1_1::Pausemenu()
     buttonselectL->setPosition(Vec2(origin.x + (visibleSize.width / 2) - (labelselectL->getContentSize().width / 2) - buttonselectL->getContentSize().width,
         origin.y + (visibleSize.height) / 2));
     buttonselectL->setPressedActionEnabled(true);
-    buttonselectL->addTouchEventListener(CC_CALLBACK_2(Level1_1::buttonselectLCallback, this));
+    buttonselectL->addTouchEventListener(CC_CALLBACK_2(Level2_1::buttonselectLCallback, this));
     this->addChild(buttonselectL, 0, 4);
 
     auto labelBack = Label::createWithTTF("go back to the start menu", "fonts/Marker Felt.ttf", 60);
@@ -115,14 +115,14 @@ void Level1_1::Pausemenu()
     buttonBack->setPosition(Vec2(origin.x + (visibleSize.width / 2) - (labelBack->getContentSize().width / 2) - buttonBack->getContentSize().width,
         origin.y + (visibleSize.height) / 2 - 2 * labelBack->getContentSize().height));
     buttonBack->setPressedActionEnabled(true);
-    buttonBack->addTouchEventListener(CC_CALLBACK_2(Level1_1::buttonbackCallback, this));
+    buttonBack->addTouchEventListener(CC_CALLBACK_2(Level2_1::buttonbackCallback, this));
     this->addChild(buttonBack, 0, 6);
 
 
 
 }
 //去选择关卡界面
-void Level1_1::buttonselectLCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
+void Level2_1::buttonselectLCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED) {
         AudioEngine::stopAll();
@@ -133,7 +133,7 @@ void Level1_1::buttonselectLCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::Tou
     return;
 }
 //游戏继续
-void Level1_1::buttoncontinueCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
+void Level2_1::buttoncontinueCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
     AudioEngine::resumeAll();
     listener->setEnabled(true);
@@ -146,7 +146,7 @@ void Level1_1::buttoncontinueCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::To
     this->removeChildByTag(7);
 }
 //去主菜单
-void Level1_1::buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
+void Level2_1::buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
     {
@@ -157,7 +157,7 @@ void Level1_1::buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchE
     }
     return;
 }
-void Level1_1::Fire(cocos2d::Vec2 origin, float angle, float speed) {
+void Level2_1::Fire(cocos2d::Vec2 origin, float angle, float speed) {
     if (cocos2d::Director::getInstance()->getTotalFrames() / 60 - lastFireTime >= 1.0f) {
         m_bullet = Bullet::create("bullet.png");
         if (m_bullet == nullptr) {
@@ -165,22 +165,22 @@ void Level1_1::Fire(cocos2d::Vec2 origin, float angle, float speed) {
             problemLoading("'bullet.png'");
         }
         this->addChild(m_bullet);
-
+        m_bullet->setRotation(90.0f - angle);
         m_bullet->shootFrom(origin, angle, speed);
     }
     lastFireTime = cocos2d::Director::getInstance()->getTotalFrames() / 60;
 }
-int Level1_1::getType(Vec2 pos)
+int Level2_1::getType(Vec2 pos)
 {
     float x = (pos.x - offsetX) / tileSize / scale;
-    float y = (mapy-1) - (pos.y - offsetY) / tileSize / scale;
+    float y = (mapy - 1) - (pos.y - offsetY) / tileSize / scale;
     if (y < 0)
         y--;
     if (x < 0)
         x--;
-    int ix = (int)x;
-    int iy = (int)y; 
-    
+    ix = (int)x;
+    iy = (int)y;
+
     switch (map[iy + 1][ix]) {
     case 1:
         return 1;
@@ -194,11 +194,15 @@ int Level1_1::getType(Vec2 pos)
         return 5;
     case 6:
         return 6;
+    case 7:
+        return 7;
+    case 8:
+        return 8;
     default:
         return 0;
     }
 }
-bool Level1_1::willContact(Vec2 vec)
+bool Level2_1::willContact(Vec2 vec)
 {
     // 获取坦克位置信息与尺寸
     Rect rect = tank->getBoundingBox();
@@ -220,19 +224,20 @@ bool Level1_1::willContact(Vec2 vec)
         switch (getType(point[i])) {
         case 1:
             return true;
-        
+        case 2:
+            return true;
         case 3:
             return true;
         case 4:
             return true;
-    
+
         default:
             continue;
         }
     }
     return false;
 }
-bool Level1_1::willContactTrap(Vec2 vec)
+void Level2_1::willContactOther(Vec2 vec)
 {
     // 获取坦克位置信息与尺寸
     Rect rect = tank->getBoundingBox();
@@ -251,18 +256,45 @@ bool Level1_1::willContactTrap(Vec2 vec)
     point[2] = Vec2(MaxX + vec.x, MinY + vec.y);
     point[3] = Vec2(MaxX + vec.x, MaxY + vec.y);
     for (int i = 0; i < 4; i++) {
-        switch (getType(point[i])) {
-        case 2:
+        switch (getType(point[i])) 
+        {
+        case 6:
+            physicsbody[iy + 1][ix]->setVisible(false);
+            map[iy + 1][ix] = 30;
+            target++;
+            return;
+        case 7:
+            if (target == 28)
+            {
+                AudioEngine::stopAll();
+                auto hello = Level1_1::createScene();
+                TransitionFade* trs = TransitionFade::create(1.0f,hello);
+                Director::getInstance()->replaceScene(trs);
+            }
+            return;
+        case 8:
             tank->deletetank();
             tank->setPosition(Vec2(2 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 4) * tileSize * scale + offsetY + tankHeight / 2));
-            return true;
+                for (int y = 0; y < mapy; ++y)
+                {
+                    for (int x = 0; x < mapx; ++x)
+                    {
+                        if (map[y][x]==30)
+                        {
+                            physicsbody[y][x]->setVisible(true);
+                            map[y][x] = 6;
+                            target--;
+                        }
+                    }
+                }
+            return;
         default:
             continue;
         }
     }
-    return false;
+    return ;
 }
-void Level1_1::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
+void Level2_1::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
     Keystate[keyCode] = true;
     switch (keyCode) {
     case cocos2d::EventKeyboard::KeyCode::KEY_A:
@@ -294,7 +326,7 @@ void Level1_1::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Ev
         break;
     }
 }
-void Level1_1::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
+void Level2_1::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
     Keystate[keyCode] = false;
     if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_A]) {
         tank->setRotation(-90.0f);
@@ -313,10 +345,11 @@ void Level1_1::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::E
         ks = KEY_W_PRESSED;
     }
 }
-void Level1_1::update(float delta) {
+void Level2_1::update(float delta) {
+    
+    //player
     this->delta = delta;
     bool staticflag = false;
-    bool staticflag2 = false;
     if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_A] == false &&
         Keystate[cocos2d::EventKeyboard::KeyCode::KEY_S] == false &&
         Keystate[cocos2d::EventKeyboard::KeyCode::KEY_D] == false &&
@@ -327,25 +360,25 @@ void Level1_1::update(float delta) {
     else {
         switch (ks) {
         case KEY_A_PRESSED:
-            staticflag = willContact(Vec2( -2.5f, 0));
-            staticflag2 = willContactTrap(Vec2(0, 0));
+            staticflag = willContact(Vec2(-2.5f, 0));
+            
             tank->moveleft();
             break;
         case KEY_S_PRESSED:
             staticflag = willContact(Vec2(0, -2.5f));
-            staticflag2 = willContactTrap(Vec2(0, 0));
+            
             tank->movedown();
             break;
         case KEY_D_PRESSED:
-            
+
             staticflag = willContact(Vec2(2.5f, 0));
-            staticflag2 = willContactTrap(Vec2(0, 0));
+           
             tank->moveright();
             break;
         case KEY_W_PRESSED:
-            
+
             staticflag = willContact(Vec2(0, 2.5f));
-            staticflag2 = willContactTrap(Vec2(0, 0));
+            
             tank->moveup();
             break;
         case KEY_P_PRESSED:
@@ -353,89 +386,143 @@ void Level1_1::update(float delta) {
             break;
         }
     }
-    
-    tank->update(delta,staticflag);
-    tank->stopmoving();
-    tank->update(delta, staticflag2);
+    tank->update(delta, staticflag);
+    willContactOther(Vec2(0, 0));
+    //chaser
+    float playx = tank->getPositionX();
+    float playy = tank->getPositionY();
+    float chaserx = chaser->getPositionX();
+    float chasery = chaser->getPositionY();
+    float distancex = playx - chaserx;
+    float distancey = playy - chasery;
+    float l = sqrt(distancex * distancex + distancey * distancey);
+    chaser->setPosition(chaserx + 1.5f * distancex / l, chasery + 1.5f * distancey / l);
+    if (fabs(chaserx - playx) <= tank->getContentSize().width / 2 &&
+        fabs(chasery - playy) <= tank->getContentSize().height / 2 )
+    {
+        tank->deletetank();
+        tank->setPosition(Vec2(2 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 4) * tileSize * scale + offsetY + tankHeight / 2));
+        for (int y = 0; y < mapy; ++y)
+        {
+            for (int x = 0; x < mapx; ++x)
+            {
+                if (map[y][x] == 30)
+                {
+                    physicsbody[y][x]->setVisible(true);
+                    map[y][x] = 6;
+                    target--;
+                }
+            }
+        }
+    }
 }
-bool Level1_1::init()
+bool Level2_1::init()
 {
     if (!Scene::init())
     {
         return false;
     }
-    auto background1=cocos2d::AudioEngine::play2d("DreamSpace.mp3", true,0.5f);
+    auto background1 = cocos2d::AudioEngine::play2d("run.mp3", true, 1.0f);
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
-    
-     //地图砖块的大小
+    //地图砖块的大小
     tileSize = 32;
-     //获取窗口大小
+    //获取窗口大小
     auto winSize = Director::getInstance()->getVisibleSize();
-     //计算地图总大小
+    //计算地图总大小
     int mapWidth = sizeof(map[0]) / sizeof(int) * tileSize;
     int mapHeight = sizeof(map) / sizeof(map[0]) * tileSize;
-     //计算地图的缩放比例
+    //计算地图的缩放比例
     float scaleX = winSize.width / mapWidth;
     float scaleY = winSize.height / mapHeight;
-     scale = MIN(scaleX, scaleY);
-      //计算地图在窗口的中心位置
-     offsetX = (winSize.width - mapWidth * scale) / 2;
-     offsetY = (winSize.height - mapHeight * scale) / 2;
-     //渲染地图
+    scale = MIN(scaleX, scaleY);
+    //计算地图在窗口的中心位置
+    offsetX = (winSize.width - mapWidth * scale) / 2;
+    offsetY = (winSize.height - mapHeight * scale) / 2;
+    //渲染地图
     for (int y = 0; y < mapy; ++y)
     {
         for (int x = 0; x < mapx; ++x)
         {
             physicsbody[y][x] = NULL;
-            if (map[y][x] == 1) {
+            switch (map[y][x]) 
+            {
+            case 1: 
                 physicsbody[y][x] = Sprite::create("wall.png");
-            }
-            else if (map[y][x] == 2) {
+                break;
+            case 2:
                 physicsbody[y][x] = Sprite::create("steel.png");
-            }
-            else if (map[y][x] == 3) {
-                physicsbody[y][x] = Sprite::create("water.png");
-            }
-            else if (map[y][x] == 4) {
+                break;
+            case 3: 
+                 physicsbody[y][x] = Sprite::create("water.png");
+                 break;
+            case 4:
                 physicsbody[y][x] = Sprite::create("grass.png");
-            }
-            else if (map[y][x] == 5) {
+                break;
+            case 5:
                 physicsbody[y][x] = Sprite::create("road_earth.png");
+                break;
+            case 6:
+                physicsbody[y][x] = Sprite::create("gold.png");
+                break;
+            case 7:
+                physicsbody[y][x] = Sprite::create("passflag.png");
+                break;
+            case 8:
+                physicsbody[y][x]= Sprite::create("thorn.png");
+                break;
+            default:
+                break;
             }
-            else {
-                continue;
-            }
-
             if (physicsbody[y][x])
             {
+                if (map[y][x] == 6 || map[y][x] == 7|| map[y][x] == 8)
+                {
+                    auto sprite = Sprite::create("road_earth.png");
+                    sprite->setScale(scale);
+                    sprite->setPosition(Vec2(x * tileSize * scale + offsetX, (mapy - 1 - y) * tileSize * scale + offsetY));
+                    sprite->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+                    this->addChild(sprite);
+                }
                 physicsbody[y][x]->setScale(scale);
-                physicsbody[y][x]->setPosition(Vec2(x * tileSize * scale + offsetX, (mapy-1 - y) * tileSize * scale+offsetY));
+                physicsbody[y][x]->setPosition(Vec2(x * tileSize * scale + offsetX, (mapy - 1 - y) * tileSize * scale + offsetY));
                 physicsbody[y][x]->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
                 this->addChild(physicsbody[y][x]);
             }
         }
     }
+
     //add tank below
     tank = Tank::create("tank.png");
     if (tank != nullptr)
     {
-         //position the sprite on the center of the screen
-        tank->setScale(32 / 28);
-        tank->setScale(scale);
-         //add the sprite as a child to this layer
+        //position the sprite on the center of the screen
+        
+        tank->setScale(scale*32/28);
+        //add the sprite as a child to this layer
         this->addChild(tank, 0);
         Rect rect = tank->getBoundingBox();
         tankWidth = rect.size.width;
         tankHeight = rect.size.height;
-        tank->setPosition(Vec2(2 * tileSize * scale + offsetX + tankWidth / 2, (mapy-1 - 4) * tileSize * scale + offsetY + tankHeight / 2));
+        tank->setPosition(Vec2(2 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 4) * tileSize * scale + offsetY + tankHeight / 2));
     }
     m_bullet = NULL;
+    //add chase below
+    chaser = Tank::create("chaser.png");
+    if (chaser != nullptr)
+    {
+        //position the sprite on the center of the screen
+        chaser->setScale(scale * 32 / 400);
+        //add the sprite as a child to this layer
+        this->addChild(chaser, 0);
+        chaser->setPosition(Vec2(1 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 20) * tileSize * scale + offsetY + tankHeight / 2));
+    }
+
     //add keyboard listenser below
-    listener->onKeyPressed = CC_CALLBACK_2(Level1_1::onKeyPressed, this);
-    listener->onKeyReleased = CC_CALLBACK_2(Level1_1::onKeyReleased, this);
+    listener->onKeyPressed = CC_CALLBACK_2(Level2_1::onKeyPressed, this);
+    listener->onKeyReleased = CC_CALLBACK_2(Level2_1::onKeyReleased, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-  
-    Level1_1::scheduleUpdate();
+
+    Level2_1::scheduleUpdate();
     return true;
 }

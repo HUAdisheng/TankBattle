@@ -401,7 +401,7 @@ bool Level1_1::init()
                 physicsbody[y][x] = Sprite::create("grass.png");
             }
             else if (map[y][x] == 5) {
-                physicsbody[y][x] = Sprite::create("road_white.png");
+                physicsbody[y][x] = Sprite::create("road_earth.png");
             }
             else {
                 continue;
@@ -439,5 +439,3 @@ bool Level1_1::init()
     Level1_1::scheduleUpdate();
     return true;
 }
-
-//}

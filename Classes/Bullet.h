@@ -12,6 +12,7 @@ public:
 
     void shoot();
     void deletebullet();
+
     
 private:
     float m_speed;

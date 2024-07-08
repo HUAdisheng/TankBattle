@@ -15,14 +15,7 @@ void Bullet::shoot() {
     auto visibleSize = Director::getInstance()->getVisibleSize();
     this->schedule([=](float dt) {
         auto newPosition = getPosition() + m_velocity * dt;
-        if (newPosition.x < 0 || newPosition.x > visibleSize.width ||
-            newPosition.y < 0 || newPosition.y > visibleSize.height) {
-            unschedule("update_bullet");  
-           deletebullet();
-        }
-        else {
-            setPosition(newPosition);
-        }
+        setPosition(newPosition);
         }, "update_bullet");
 }
 void Bullet::shootFrom(Vec2 origin, float angle, float speed)

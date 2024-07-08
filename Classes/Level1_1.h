@@ -3,6 +3,8 @@
 #include"FirstScene.h"
 #include "Bullet.h"
 #include"Tank.h"
+#include <vector>
+
 extern enum KeyState;
 const int mapy = 20;
 const int mapx = 26;
@@ -18,16 +20,19 @@ public:
     void buttonselectLCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type);
     void buttoncontinueCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type);
     void Fire(cocos2d::Vec2 origin, float angle, float speed);
-    bool willContact(Vec2 vec);
-    int getType(Vec2 pos);
+    bool willContact(Vec2 vec,Sprite* sprite);
+    int  getType(Vec2 pos);
     void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
     void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
     void update(float delta);
     Vec2 calculation(Tank* tank);
     bool willContactTrap(Vec2 vec);
+    void willContactBullet();
+    void destroyMap(Bullet* bullet);
     CREATE_FUNC(Level1_1);
 private:
-    Bullet* m_bullet;
+    Sprite* physicsbody[mapy][mapx];
+    std::vector<Bullet*> m_bullet;
     EventListenerKeyboard* listener = EventListenerKeyboard::create();
     float lastFireTime = 0.0f;
     Tank* tank;

@@ -8,7 +8,7 @@ Vec2 Level1_1::calculation(Tank* tank) {
     auto newPosition = tank->getPosition();
     auto r = tank->getRotation();
     auto size = tank->getContentSize();
-    auto offset = tank->getScale() * size.height / 2;
+    auto offset = tank->getScale() * size.height / 2 + 20;
     if (r == 0.0f) {
         newPosition += Vec2(0, offset);
     }
@@ -159,14 +159,11 @@ void Level1_1::buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchE
 }
 void Level1_1::Fire(cocos2d::Vec2 origin, float angle, float speed) {
     if (cocos2d::Director::getInstance()->getTotalFrames() / 60 - lastFireTime >= 1.0f) {
-        m_bullet = Bullet::create("bullet.png");
-        if (m_bullet == nullptr) {
+        m_bullet.push_back(Bullet::create("bullet.png"));
 
-            problemLoading("'bullet.png'");
-        }
-        this->addChild(m_bullet);
+        this->addChild(m_bullet[m_bullet.size() - 1]);
 
-        m_bullet->shootFrom(origin, angle, speed);
+        m_bullet[m_bullet.size() - 1]->shootFrom(origin, angle, speed);
     }
     lastFireTime = cocos2d::Director::getInstance()->getTotalFrames() / 60;
 }
@@ -198,10 +195,10 @@ int Level1_1::getType(Vec2 pos)
         return 0;
     }
 }
-bool Level1_1::willContact(Vec2 vec)
+bool Level1_1::willContact(Vec2 vec,Sprite* sprite)
 {
-    // 获取坦克位置信息与尺寸
-    Rect rect = tank->getBoundingBox();
+    // 获取坦克/子弹位置信息与尺寸
+    Rect rect = sprite->getBoundingBox();
 
     //将坦克Y坐标转换为地图上的Y坐标
     float MinY = rect.getMinY();
@@ -262,6 +259,79 @@ bool Level1_1::willContactTrap(Vec2 vec)
     }
     return false;
 }
+
+void Level1_1::willContactBullet()
+{
+    for (int i = 0; i < m_bullet.size(); i++) {
+        if (willContact(Vec2::ZERO, m_bullet[i])) {
+            Vec2 pos = m_bullet[i]->getPosition();
+            destroyMap(m_bullet[i]);
+            m_bullet[i]->deletebullet();
+            m_bullet.erase(m_bullet.begin() + i);
+        }
+        else if (tank->getBoundingBox().intersectsRect(m_bullet[i]->getBoundingBox())) {
+            m_bullet[i]->deletebullet();
+            m_bullet.erase(m_bullet.begin() + i);
+            tank->deletetank();
+        }
+        else {
+            for (int j = i + 1; j < m_bullet.size(); j++) {
+                if (m_bullet[i]->getBoundingBox().intersectsRect(m_bullet[j]->getBoundingBox())) {
+                    m_bullet[i]->deletebullet();
+                    m_bullet[j]->deletebullet();
+                    m_bullet.erase(m_bullet.begin() + i);
+                    if (i < j) {
+                        j--;
+                    }
+                    m_bullet.erase(m_bullet.begin() + j);
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void Level1_1::destroyMap(Bullet* bullet)
+{
+    Rect rect = bullet->getBoundingBox();
+
+    //将坦克Y坐标转换为地图上的Y坐标
+    float MinY = rect.getMinY();
+    float MaxY = rect.getMaxY();
+
+    // 计算坦克的四顶点坐标
+    float MinX = rect.getMinX();
+    float MaxX = rect.getMaxX();
+
+    Vec2 point[4];
+    point[0] = Vec2(MinX, MinY);
+    point[1] = Vec2(MinX, MaxY);
+    point[2] = Vec2(MaxX, MinY);
+    point[3] = Vec2(MaxX, MaxY);
+    for (int i = 0; i < 4; i++) {
+        float x = (point[i].x - offsetX) / tileSize / scale;
+        float y = (mapy - 1) - (point[i].y - offsetY) / tileSize / scale;
+        if (y > 0)
+            y++;
+        int ix = (int)x;
+        int iy = (int)y;
+        switch (map[iy][ix]) {
+        // 此处根据方块类型执行方块摧毁的操作
+        case 1:
+            physicsbody[iy][ix]->removeFromParentAndCleanup(true);
+            map[iy][ix] = 0;
+            break;
+        case 3:
+            
+        case 4:
+            
+
+        default:
+            continue;
+        }
+    }
+}
+
 void Level1_1::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
     Keystate[keyCode] = true;
     switch (keyCode) {
@@ -327,24 +397,24 @@ void Level1_1::update(float delta) {
     else {
         switch (ks) {
         case KEY_A_PRESSED:
-            staticflag = willContact(Vec2( -2.5f, 0));
+            staticflag = willContact(Vec2( -2.5f, 0),tank);
             staticflag2 = willContactTrap(Vec2(0, 0));
             tank->moveleft();
             break;
         case KEY_S_PRESSED:
-            staticflag = willContact(Vec2(0, -2.5f));
+            staticflag = willContact(Vec2(0, -2.5f), tank);
             staticflag2 = willContactTrap(Vec2(0, 0));
             tank->movedown();
             break;
         case KEY_D_PRESSED:
             
-            staticflag = willContact(Vec2(2.5f, 0));
+            staticflag = willContact(Vec2(2.5f, 0), tank);
             staticflag2 = willContactTrap(Vec2(0, 0));
             tank->moveright();
             break;
         case KEY_W_PRESSED:
             
-            staticflag = willContact(Vec2(0, 2.5f));
+            staticflag = willContact(Vec2(0, 2.5f), tank);
             staticflag2 = willContactTrap(Vec2(0, 0));
             tank->moveup();
             break;
@@ -353,7 +423,7 @@ void Level1_1::update(float delta) {
             break;
         }
     }
-    
+    willContactBullet();
     tank->update(delta,staticflag);
     tank->stopmoving();
     tank->update(delta, staticflag2);
@@ -367,7 +437,7 @@ bool Level1_1::init()
     auto background1=cocos2d::AudioEngine::play2d("DreamSpace.mp3", true,0.5f);
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
-    Sprite* physicsbody[mapy][mapx];
+    physicsbody[mapy][mapx];
      //地图砖块的大小
     tileSize = 32;
      //获取窗口大小
@@ -430,12 +500,13 @@ bool Level1_1::init()
         tankHeight = rect.size.height;
         tank->setPosition(Vec2(2 * tileSize * scale + offsetX + tankWidth / 2, (mapy-1 - 4) * tileSize * scale + offsetY + tankHeight / 2));
     }
-    m_bullet = NULL;
+
     //add keyboard listenser below
     listener->onKeyPressed = CC_CALLBACK_2(Level1_1::onKeyPressed, this);
     listener->onKeyReleased = CC_CALLBACK_2(Level1_1::onKeyReleased, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
   
+
     Level1_1::scheduleUpdate();
     return true;
 }

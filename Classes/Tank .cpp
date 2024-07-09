@@ -4,6 +4,7 @@ Tank* Tank::create(const std::string& TankImage) {
     Tank* tank = new (std::nothrow) Tank();
     if (tank && tank->initWithFile(TankImage)) {
         tank->autorelease();
+        tank->setTankspeed(2.5f);
         tank->Tank_Current_Postion = tank->getPosition();
         return tank;
     }
@@ -15,29 +16,29 @@ float Tank::setTankspeed(float speed) {
     this->Tank_Speed = speed;
     return speed;
 }
+
 void Tank::movedown() {
-    vec = Vec2(0, -5.0f);
+    vec = Vec2(0, -Tank_Speed);
 }
 void Tank::moveup() {
-    vec = Vec2(0, 5.0f);
+    vec = Vec2(0, Tank_Speed);
 }
 void Tank::moveleft() {
-    vec = Vec2(-5.0f, 0);
+    vec = Vec2(-Tank_Speed, 0);
 }
 void Tank::moveright() {
-    vec = Vec2(5.0f, 0);
+    vec = Vec2(Tank_Speed, 0);
 }
 void Tank::stopmoving() {
     vec = Vec2(0, 0);
 }
-void Tank::setGod_mode(bool god) {
-    this->God_mode = god;
-    if (God_mode == true) {
-        this->setOpacity(128);
+void Tank::setGod_mode(int God_mode_time) {
+    if (God_mode_time >= 0) {
+        this->setOpacity(150);
+        this->God_mode = God_mode_time;
     }
-    else {
+    else
         this->setOpacity(255);
-    }
 };
 bool Tank::isReachBoundry() {
     auto visibleSize = Director::getInstance()->getVisibleSize();
@@ -47,18 +48,14 @@ bool Tank::isReachBoundry() {
     return false;
 }
 void Tank::update(float delta, bool staticFlag) {
+    if (God_mode > 0) {
+        this->setOpacity(150);
+        God_mode--;
+    }
+    else
+        this->setOpacity(255);
     if (!staticFlag) {
         Tank::setPosition(Tank::getPosition() + vec);
-        tank_time--;
-    }
-    else {
-        
-        if (tank_time >= 0)
-        {
-            this->setGod_mode(true);
-
-        }
-        else this->setGod_mode(false);
     }
 }
 void Tank::deletetank() {

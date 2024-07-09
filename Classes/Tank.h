@@ -17,13 +17,15 @@ public:
     bool isReachBoundry();
     void deletetank();
     float setTankspeed(float speed);
-    void setGod_mode(bool god); int tank_time;
-private:
+    void setGod_mode(int God_mode_time);
     float Tank_Speed;
+private:
+   // float Tank_Speed;
     Vec2 vec;
     Vec2 Tank_Current_Postion;
     int Lives;
-    bool God_mode;
+public:
+    int God_mode;
     //≤‚ ‘
     
 };

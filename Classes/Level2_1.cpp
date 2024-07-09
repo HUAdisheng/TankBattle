@@ -198,6 +198,10 @@ int Level2_1::getType(Vec2 pos)
         return 7;
     case 8:
         return 8;
+    case 9:
+        return 9;
+    case 10:
+        return 10;
     default:
         return 0;
     }
@@ -264,7 +268,7 @@ void Level2_1::willContactOther(Vec2 vec)
             target++;
             return;
         case 7:
-            if (target == 28)
+            if (target == 738)
             {
                 AudioEngine::stopAll();
                 auto hello = Level1_1::createScene();
@@ -273,8 +277,9 @@ void Level2_1::willContactOther(Vec2 vec)
             }
             return;
         case 8:
+        case 9:
             tank->deletetank();
-            tank->setPosition(Vec2(2 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 4) * tileSize * scale + offsetY + tankHeight / 2));
+            tank->setPosition(Vec2(2 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 1) * tileSize * scale + offsetY + tankHeight / 2));
                 for (int y = 0; y < mapy; ++y)
                 {
                     for (int x = 0; x < mapx; ++x)
@@ -288,6 +293,22 @@ void Level2_1::willContactOther(Vec2 vec)
                     }
                 }
             return;
+        case 10:
+            physicsbody[iy + 1][ix]->setVisible(true);
+            tank->deletetank();
+            tank->setPosition(Vec2(2 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 1) * tileSize * scale + offsetY + tankHeight / 2));
+            for (int y = 0; y < mapy; ++y)
+            {
+                for (int x = 0; x < mapx; ++x)
+                {
+                    if (map[y][x] == 30)
+                    {
+                        physicsbody[y][x]->setVisible(true);
+                        map[y][x] = 6;
+                        target--;
+                    }
+                }
+            }
         default:
             continue;
         }
@@ -402,6 +423,7 @@ void Level2_1::update(float delta) {
     {
         tank->deletetank();
         tank->setPosition(Vec2(2 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 4) * tileSize * scale + offsetY + tankHeight / 2));
+        chaser->setPosition(Vec2(1 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 20) * tileSize * scale + offsetY + tankHeight / 2));
         for (int y = 0; y < mapy; ++y)
         {
             for (int x = 0; x < mapx; ++x)
@@ -471,18 +493,27 @@ bool Level2_1::init()
             case 8:
                 physicsbody[y][x]= Sprite::create("thorn.png");
                 break;
+            case 9:
+                physicsbody[y][x] = Sprite::create("gold.png");
+                break;
+            case 10:
+                physicsbody[y][x] = Sprite::create("fireearth.png");
             default:
                 break;
             }
             if (physicsbody[y][x])
             {
-                if (map[y][x] == 6 || map[y][x] == 7|| map[y][x] == 8)
+                if (map[y][x] == 6 || map[y][x] == 7|| map[y][x] == 8||map[y][x]==9||map[y][x]==10)
                 {
                     auto sprite = Sprite::create("road_earth.png");
                     sprite->setScale(scale);
                     sprite->setPosition(Vec2(x * tileSize * scale + offsetX, (mapy - 1 - y) * tileSize * scale + offsetY));
                     sprite->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
                     this->addChild(sprite);
+                    if (map[y][x] == 10)
+                    {
+                        physicsbody[y][x]->setVisible(false);
+                    }
                 }
                 physicsbody[y][x]->setScale(scale);
                 physicsbody[y][x]->setPosition(Vec2(x * tileSize * scale + offsetX, (mapy - 1 - y) * tileSize * scale + offsetY));
@@ -498,13 +529,13 @@ bool Level2_1::init()
     {
         //position the sprite on the center of the screen
         
-        tank->setScale(scale*32/28);
+        tank->setScale(scale*32/50);
         //add the sprite as a child to this layer
         this->addChild(tank, 0);
         Rect rect = tank->getBoundingBox();
         tankWidth = rect.size.width;
         tankHeight = rect.size.height;
-        tank->setPosition(Vec2(2 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 4) * tileSize * scale + offsetY + tankHeight / 2));
+        tank->setPosition(Vec2(1 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 1) * tileSize * scale + offsetY + tankHeight / 2));
     }
     m_bullet = NULL;
     //add chase below

@@ -6,23 +6,23 @@ Tank* Tank::create(const std::string& TankImage) {
         tank->autorelease();
         tank->Tank_Current_Postion = tank->getPosition();
         //tank->bullet=Bullet::create();
+        tank->canmove = true;
         return tank;
     }
     CC_SAFE_DELETE(tank);
     return nullptr;
 }
-
 void Tank::movedown() {
-    vec = Vec2(0, -10.0f);
+    vec =canmove? Vec2(0, -2.5f):Vec2(0,0);
 }
 void Tank::moveup() {
-    vec = Vec2(0, 10.0f);
+    vec = canmove ? Vec2(0, 2.5f) : Vec2(0, 0);
 }
 void Tank::moveleft() {
-    vec = Vec2(-10.0f, 0);
+    vec = canmove ? Vec2(-2.5f, 0) : Vec2(0, 0);
 }
 void Tank::moveright() {
-    vec = Vec2(10.0f, 0);
+    vec = canmove ? Vec2(2.5f, 0) : Vec2(0, 0);
 }
 void Tank::stopmoving() {
     vec = Vec2(0, 0);
@@ -34,9 +34,10 @@ bool Tank::isReachBoundry() {
         return true;
     return false;
 }
-void Tank::update(float delta) {
-    
-    Tank::setPosition(Tank::getPosition() + vec);
+void Tank::update(float delta, bool staticFlag) {
+    if (!staticFlag) {
+        Tank::setPosition(Tank::getPosition() + vec);
+    }
 }
 void Tank::deletetank() {
     auto boom = Sprite::create("boom_1.png");

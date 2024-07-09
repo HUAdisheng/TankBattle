@@ -3,11 +3,13 @@
 #include"FirstScene.h"
 #include "Bullet.h"
 #include"Tank.h"
+#include <vector>
+
 extern enum KeyState;
-const int mapy = 20;
-const int mapx = 26;
+const int mapy = 15;
+const int mapx = 15;
 class Level1_1 :
-     public cocos2d::Scene
+    public cocos2d::Scene
 {
 public:
 
@@ -19,15 +21,43 @@ public:
     void buttoncontinueCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type);
     void Fire(cocos2d::Vec2 origin, float angle, float speed);
     bool willContact(Vec2 vec);
-    int getType(Vec2 pos);
+    int  getType(Vec2 pos);
     void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
     void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
     void update(float delta);
     Vec2 calculation(Tank* tank);
     bool willContactTrap(Vec2 vec);
+    void ContactBullet();
+    void destroyMap(Bullet* bullet);
+    bool willContactBullet(Bullet* bullet);
+    int target = 0;
+    void again() {
+        tank->deletetank();
+        tank->setPosition(Vec2(2 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 12) * tileSize * scale + offsetY + tankHeight / 2));
+        for (int y = 0; y < mapy; ++y)
+        {
+            for (int x = 0; x < mapx; ++x)
+            {
+                if (map[y][x] == 30)
+                {
+                    physicsbody[y][x]->setVisible(true);
+                    map[y][x] = 7;
+                    target--;
+                }
+            }
+        }
+        physicsbody[1][13]->setVisible(false);
+    }
+    bool ison = false;
     CREATE_FUNC(Level1_1);
+    float elapsedTime = 0.0f;
 private:
-    Bullet* m_bullet;
+  
+    int ix = 0;
+    int iy = 0;
+    Sprite* physicsbody[mapy][mapx];
+    std::vector<Bullet*> m_bullet;
+    
     EventListenerKeyboard* listener = EventListenerKeyboard::create();
     float lastFireTime = 0.0f;
     Tank* tank;
@@ -40,31 +70,24 @@ private:
     float scale;
     float tankWidth;
     float tankHeight;
-    Sprite* physicsbody[mapy][mapx];
     int map[mapy][mapx] = {
-        {2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1,1,1,1,1,1,1,1,1,1,1,1,2},
-        {2, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,5,5,5,5,5,5,5,5,5,5,5,5,1},
-        {2, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 2, 5,1,1,1,1,1,5,5,5,5,5,5,5,1},
-        {2, 5, 5, 5, 5, 5, 5, 5, 5, 2, 2, 2, 5,1,1,1,1,1,5,5,5,5,5,5,5,1},
-        {2, 5, 5, 1, 5, 5, 5, 5, 5, 5, 5, 5, 5,1,1,1,1,1,5,5,5,5,5,5,5,1},
-        {2, 1, 5, 1, 5, 5, 3, 3, 3, 3, 5, 5, 5,1,1,1,1,1,5,5,5,5,5,5,5,1},
-        {2, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,1,1,1,1,1,5,5,5,5,5,5,5,1},
-        {2, 5, 5, 5, 5, 5, 5, 5, 6, 5, 5, 5, 5,1,1,1,1,1,5,5,5,5,5,5,5,1},
-        {2, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,1,1,1,1,1,5,5,5,5,5,5,5,1},
-        {2, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,1,1,1,1,1,5,5,5,5,5,5,5,1},
-        {2, 5, 5, 5, 5, 5, 4, 4, 4, 5, 5, 5, 5,1,1,1,1,1,5,5,5,5,5,5,5,1},
-        {2, 5, 5, 5, 5, 5, 4, 4, 4, 5, 5, 5, 5,1,1,1,1,1,5,5,5,5,5,5,5,1},
-        {1, 5, 5, 5, 5, 5, 4, 4, 4, 5, 5, 5, 5,1,1,1,1,1,5,5,5,5,5,5,5,1},
-        {1, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,1,1,1,1,1,5,5,5,5,5,5,5,1},
-        {1, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,1,1,1,1,1,5,5,5,5,5,5,5,1},
-        {1, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,1,1,1,1,1,5,5,5,5,5,5,5,1},
-        {1, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,1,1,1,1,1,5,5,5,5,5,5,5,1},
-        {1, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,1,1,1,1,1,5,5,5,5,5,5,5,1},
-        {1, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,1,1,1,1,1,5,5,5,5,5,5,5,1},
-        {1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,1,1,1,1,1,5,5,5,5,5,5,5,1}
-        
-        
+        {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,6,6},
+        {6, 5, 6, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5,8,6},
+        {6, 6, 5, 1, 5, 5, 6, 5, 6, 5, 6, 4, 5,3,6},
+        {6, 5, 5, 5, 6, 5, 5, 6, 6, 5, 5, 4, 5,5,6},
+        {6, 5, 6, 5, 5, 5, 6, 5, 10, 2,5,4, 5,3,6},
+        {6, 5, 5, 6, 5, 6, 6, 5, 6, 10,5,4, 5,5,6},
+        {6, 6, 5, 5, 6, 5, 5, 5, 6, 5, 5, 4, 5,5,6},
+        {6, 7, 6, 5, 5, 5, 6, 5, 6, 5, 5, 4, 5,5,6},
+        {6, 5, 5, 6, 5, 6, 5, 5, 6, 5, 5, 4, 5,2,6},
+        {6, 6, 5, 5, 5, 6, 5, 6, 5, 6, 5, 4, 5,5,6},
+        {6, 5, 6, 5, 5, 5, 5, 6, 5, 5, 5, 4, 5,5,6},
+        {6, 5, 5, 5, 5, 5, 5, 5, 6, 5, 5, 4, 6,6,6},
+        {6, 5, 5, 5, 5, 5, 6, 5, 5, 5, 4, 9, 7,5,6},
+        {6, 5, 5, 6, 5, 6, 5, 5, 5, 5, 6, 5, 6,1,6},
+        {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,6,6},
+      
+
 
     };
 };
-

@@ -12,11 +12,12 @@ public:
 
     void shoot();
     void deletebullet();
-    
+
+
 private:
     float m_speed;
     cocos2d::Vec2 m_velocity;
-    
+
 };
 
 #endif // __BULLET_H__

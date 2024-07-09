@@ -7,7 +7,7 @@ using namespace cocos2d;
 class Tank :public Sprite {
 public:
     static Tank* create(const std::string& TankImage);
-    virtual void update(float delta,  bool staticFlag);
+    virtual void update(float delta, bool staticFlag);
     void moveleft();
     void moveright();
     void moveup();
@@ -15,10 +15,6 @@ public:
     void stopmoving();
     bool isReachBoundry();
     void deletetank();
-    bool canmove;
-    void setmove(bool can) {
-        canmove = can;
-    }
 private:
     Vec2 vec;
     Vec2 Tank_Current_Postion;

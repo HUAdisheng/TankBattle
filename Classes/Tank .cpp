@@ -6,23 +6,22 @@ Tank* Tank::create(const std::string& TankImage) {
         tank->autorelease();
         tank->Tank_Current_Postion = tank->getPosition();
         //tank->bullet=Bullet::create();
-        tank->canmove = true;
         return tank;
     }
     CC_SAFE_DELETE(tank);
     return nullptr;
 }
 void Tank::movedown() {
-    vec =canmove? Vec2(0, -2.5f):Vec2(0,0);
+    vec = Vec2(0, -2.5f);
 }
 void Tank::moveup() {
-    vec = canmove ? Vec2(0, 2.5f) : Vec2(0, 0);
+    vec = Vec2(0, 2.5f);
 }
 void Tank::moveleft() {
-    vec = canmove ? Vec2(-2.5f, 0) : Vec2(0, 0);
+    vec = Vec2(-2.5f, 0);
 }
 void Tank::moveright() {
-    vec = canmove ? Vec2(2.5f, 0) : Vec2(0, 0);
+    vec = Vec2(2.5f, 0);
 }
 void Tank::stopmoving() {
     vec = Vec2(0, 0);
@@ -61,5 +60,3 @@ void Tank::deletetank() {
     auto sequence = Sequence::create(tankboom_animate, removeBoom, nullptr);
     boom->runAction(sequence);
 }
-
-

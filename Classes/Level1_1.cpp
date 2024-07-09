@@ -262,6 +262,79 @@ bool Level1_1::willContactTrap(Vec2 vec)
     }
     return false;
 }
+
+void Level1_1::willContactBullet()
+{
+    for (int i = 0; i < m_bullet.size(); i++) {
+        if (willContact(Vec2::ZERO, m_bullet[i])) {
+            Vec2 pos = m_bullet[i]->getPosition();
+            destroyMap(m_bullet[i]);
+            m_bullet[i]->deletebullet();
+            m_bullet.erase(m_bullet.begin() + i);
+        }
+        else if (tank->getBoundingBox().intersectsRect(m_bullet[i]->getBoundingBox())) {
+            m_bullet[i]->deletebullet();
+            m_bullet.erase(m_bullet.begin() + i);
+            tank->deletetank();
+        }
+        else {
+            for (int j = i + 1; j < m_bullet.size(); j++) {
+                if (m_bullet[i]->getBoundingBox().intersectsRect(m_bullet[j]->getBoundingBox())) {
+                    m_bullet[i]->deletebullet();
+                    m_bullet[j]->deletebullet();
+                    m_bullet.erase(m_bullet.begin() + i);
+                    if (i < j) {
+                        j--;
+                    }
+                    m_bullet.erase(m_bullet.begin() + j);
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void Level1_1::destroyMap(Bullet* bullet)
+{
+    Rect rect = bullet->getBoundingBox();
+
+    //将坦克Y坐标转换为地图上的Y坐标
+    float MinY = rect.getMinY();
+    float MaxY = rect.getMaxY();
+
+    // 计算坦克的四顶点坐标
+    float MinX = rect.getMinX();
+    float MaxX = rect.getMaxX();
+
+    Vec2 point[4];
+    point[0] = Vec2(MinX, MinY);
+    point[1] = Vec2(MinX, MaxY);
+    point[2] = Vec2(MaxX, MinY);
+    point[3] = Vec2(MaxX, MaxY);
+    for (int i = 0; i < 4; i++) {
+        float x = (point[i].x - offsetX) / tileSize / scale;
+        float y = (mapy - 1) - (point[i].y - offsetY) / tileSize / scale;
+        if (y > 0)
+            y++;
+        int ix = (int)x;
+        int iy = (int)y;
+        switch (map[iy][ix]) {
+        // 此处根据方块类型执行方块摧毁的操作
+        case 1:
+            physicsbody[iy][ix]->setVisible(false);
+            map[iy][ix] = 0;
+            break;
+        case 3:
+            
+        case 4:
+            
+
+        default:
+            continue;
+        }
+    }
+}
+
 void Level1_1::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
     Keystate[keyCode] = true;
     switch (keyCode) {

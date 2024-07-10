@@ -8,7 +8,7 @@ Vec2 Level1_1::calculation(Tank* tank) {
     auto newPosition = tank->getPosition();
     auto r = tank->getRotation();
     auto size = tank->getContentSize();
-    auto offset = tank->getScale() * size.height / 2;
+    auto offset = tank->getScale() * size.height / 2 + 20;
     if (r == 0.0f) {
         newPosition += Vec2(0, offset);
     }
@@ -159,14 +159,11 @@ void Level1_1::buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchE
 }
 void Level1_1::Fire(cocos2d::Vec2 origin, float angle, float speed) {
     if (cocos2d::Director::getInstance()->getTotalFrames() / 60 - lastFireTime >= 1.0f) {
-        m_bullet = Bullet::create("bullet.png");
-        if (m_bullet == nullptr) {
+        m_bullet.push_back(Bullet::create("bullet.png"));
 
-            problemLoading("'bullet.png'");
-        }
-        this->addChild(m_bullet);
+        this->addChild(m_bullet[m_bullet.size() - 1]);
 
-        m_bullet->shootFrom(origin, angle, speed);
+        m_bullet[m_bullet.size() - 1]->shootFrom(origin, angle, speed);
     }
     lastFireTime = cocos2d::Director::getInstance()->getTotalFrames() / 60;
 }
@@ -198,10 +195,10 @@ int Level1_1::getType(Vec2 pos)
         return 0;
     }
 }
-bool Level1_1::willContact(Vec2 vec)
+bool Level1_1::willContact(Vec2 vec,Sprite* sprite)
 {
-    // 获取坦克位置信息与尺寸
-    Rect rect = tank->getBoundingBox();
+    // 获取坦克/子弹位置信息与尺寸
+    Rect rect = sprite->getBoundingBox();
 
     //将坦克Y坐标转换为地图上的Y坐标
     float MinY = rect.getMinY();
@@ -400,24 +397,24 @@ void Level1_1::update(float delta) {
     else {
         switch (ks) {
         case KEY_A_PRESSED:
-            staticflag = willContact(Vec2( -2.5f, 0));
+            staticflag = willContact(Vec2( -2.5f, 0),tank);
             staticflag2 = willContactTrap(Vec2(0, 0));
             tank->moveleft();
             break;
         case KEY_S_PRESSED:
-            staticflag = willContact(Vec2(0, -2.5f));
+            staticflag = willContact(Vec2(0, -2.5f), tank);
             staticflag2 = willContactTrap(Vec2(0, 0));
             tank->movedown();
             break;
         case KEY_D_PRESSED:
             
-            staticflag = willContact(Vec2(2.5f, 0));
+            staticflag = willContact(Vec2(2.5f, 0), tank);
             staticflag2 = willContactTrap(Vec2(0, 0));
             tank->moveright();
             break;
         case KEY_W_PRESSED:
             
-            staticflag = willContact(Vec2(0, 2.5f));
+            staticflag = willContact(Vec2(0, 2.5f), tank);
             staticflag2 = willContactTrap(Vec2(0, 0));
             tank->moveup();
             break;
@@ -426,7 +423,7 @@ void Level1_1::update(float delta) {
             break;
         }
     }
-    
+    willContactBullet();
     tank->update(delta,staticflag);
     tank->stopmoving();
     tank->update(delta, staticflag2);
@@ -440,7 +437,7 @@ bool Level1_1::init()
     auto background1=cocos2d::AudioEngine::play2d("DreamSpace.mp3", true,0.5f);
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
-    
+    physicsbody[mapy][mapx];
      //地图砖块的大小
     tileSize = 32;
      //获取窗口大小
@@ -503,12 +500,13 @@ bool Level1_1::init()
         tankHeight = rect.size.height;
         tank->setPosition(Vec2(2 * tileSize * scale + offsetX + tankWidth / 2, (mapy-1 - 4) * tileSize * scale + offsetY + tankHeight / 2));
     }
-    m_bullet = NULL;
+
     //add keyboard listenser below
     listener->onKeyPressed = CC_CALLBACK_2(Level1_1::onKeyPressed, this);
     listener->onKeyReleased = CC_CALLBACK_2(Level1_1::onKeyReleased, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
   
+
     Level1_1::scheduleUpdate();
     return true;
 }

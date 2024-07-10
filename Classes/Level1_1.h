@@ -33,7 +33,11 @@ public:
     int target = 0;
     void again() {
         tank->deletetank();
-        tank->setPosition(Vec2(2 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 12) * tileSize * scale + offsetY + tankHeight / 2));
+        tank->setPosition(birthpos);
+      
+    }
+    bool ison = false;
+    void dategold() {
         for (int y = 0; y < mapy; ++y)
         {
             for (int x = 0; x < mapx; ++x)
@@ -48,7 +52,9 @@ public:
         }
         physicsbody[1][13]->setVisible(false);
     }
-    bool ison = false;
+    void setbirth(Vec2 vec) {
+        birthpos = vec;
+    }
     CREATE_FUNC(Level1_1);
     float elapsedTime = 0.0f;
 private:
@@ -57,7 +63,7 @@ private:
     int iy = 0;
     Sprite* physicsbody[mapy][mapx];
     std::vector<Bullet*> m_bullet;
-    
+    Vec2 birthpos;
     EventListenerKeyboard* listener = EventListenerKeyboard::create();
     float lastFireTime = 0.0f;
     Tank* tank;
@@ -73,18 +79,18 @@ private:
     int map[mapy][mapx] = {
         {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,6,6},
         {6, 5, 6, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5,8,6},
-        {6, 6, 5, 1, 5, 5, 6, 5, 6, 5, 6, 4, 5,3,6},
+        {6, 6, 5, 1, 5, 5, 6, 5, 6, 5, 6, 4, 13,12,6},
         {6, 5, 5, 5, 6, 5, 5, 6, 6, 5, 5, 4, 5,5,6},
-        {6, 5, 6, 5, 5, 5, 6, 5, 10, 2,5,4, 5,3,6},
-        {6, 5, 5, 6, 5, 6, 6, 5, 6, 10,5,4, 5,5,6},
+        {6, 5, 6, 5, 5, 5, 6, 5, 10, 2,5,4, 5,12,6},
+        {6, 5, 5, 6, 5, 6, 6, 5, 6, 10,5,4, 5,13,6},
         {6, 6, 5, 5, 6, 5, 5, 5, 6, 5, 5, 4, 5,5,6},
         {6, 7, 6, 5, 5, 5, 6, 5, 6, 5, 5, 4, 5,5,6},
         {6, 5, 5, 6, 5, 6, 5, 5, 6, 5, 5, 4, 5,2,6},
-        {6, 6, 5, 5, 5, 6, 5, 6, 5, 6, 5, 4, 5,5,6},
+        {6, 6, 5, 5, 5, 6, 5, 6, 5, 5, 5, 4, 5,5,6},
         {6, 5, 6, 5, 5, 5, 5, 6, 5, 5, 5, 4, 5,5,6},
         {6, 5, 5, 5, 5, 5, 5, 5, 6, 5, 5, 4, 6,6,6},
-        {6, 5, 5, 5, 5, 5, 6, 5, 5, 5, 4, 9, 7,5,6},
-        {6, 5, 5, 6, 5, 6, 5, 5, 5, 5, 6, 5, 6,1,6},
+        {6, 5, 11, 13, 13, 13, 6, 5, 5, 5, 4, 9, 7,5,6},
+        {6, 5, 5, 6, 5, 6, 5, 13, 5, 5, 6, 5, 6,1,6},
         {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,6,6},
       
 

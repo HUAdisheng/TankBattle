@@ -199,6 +199,9 @@ int Level1_1::getType(Vec2 pos)
         return 9;
     case 10:
         return 10;
+    case 11:return 11;
+    case 12: return 12;
+    case 13:return 13;
     default:
         return 0;
     }
@@ -265,12 +268,21 @@ bool Level1_1::willContactTrap(Vec2 vec)
             physicsbody[iy+1][ix] = sprite;
             this->addChild(sprite);
             again();
+            if (!physicsbody[12][2]->isVisible()) {
+                dategold();
+            }
             return true;
         case 2:
             again();
+            if (!physicsbody[12][2]->isVisible()) {
+                dategold();
+            }
             return true;
         case 3:
             again();
+            if (!physicsbody[12][2]->isVisible()) {
+                dategold();
+            }
             physicsbody[iy + 1][ix]->setVisible(true);
             return true;
         case 7:
@@ -284,16 +296,34 @@ bool Level1_1::willContactTrap(Vec2 vec)
         case 8:
             if (physicsbody[1][13]->isVisible())
             {
-                AudioEngine::stopAll();
-                auto hello = Level1_1::createScene();
-                TransitionFade* trs = TransitionFade::create(1.0f, hello);
-                Director::getInstance()->replaceScene(trs);
+                setbirth(Vec2(13 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 1) * tileSize * scale + offsetY + tankHeight / 2));
+                physicsbody[12][2]->setVisible(true);
+                physicsbody[1][13]->setVisible(false);
             }
             return true;
         case 4:
             ison = true;
             return true;
-  
+        case 11:if (physicsbody[12][2]->isVisible()) {
+            AudioEngine::stopAll();
+            auto hello = Level1_1::createScene();
+            TransitionFade* trs = TransitionFade::create(1.0, hello);
+            Director::getInstance()->replaceScene(trs);
+        }
+            return true;
+        case 12:
+            if (!physicsbody[12][2]->isVisible()) {
+                again();
+                dategold();
+                physicsbody[iy + 1][ix]->setVisible(true);
+            }
+            return true;
+        case 13:
+            if (physicsbody[12][2]->isVisible()) {
+                again();
+                physicsbody[iy + 1][ix]->setVisible(true);
+            }
+            return true;
         default:
             continue;
         }
@@ -313,6 +343,9 @@ void Level1_1::ContactBullet()
             m_bullet[i]->deletebullet();
             m_bullet.erase(m_bullet.begin() + i);
             again();
+            if (!physicsbody[12][2]->isVisible()) {
+                dategold();
+            }
         }
         else {
             for (int j = i + 1; j < m_bullet.size(); j++) {
@@ -407,9 +440,10 @@ void Level1_1::destroyMap(Bullet* bullet)
             map[iy][ix] = 0;
             break;
         case 10:
-            physicsbody[iy][ix]->removeFromParentAndCleanup(true);
-            map[iy][ix] = 0;
             again();
+            if (!physicsbody[12][2]->isVisible()) {
+                dategold();
+            }
             break;
         default:
             continue;
@@ -585,12 +619,24 @@ bool Level1_1::init()
                 case 10:
                     physicsbody[y][x] = Sprite::create("danger.png");
                     break;
+                case 11:
+                    physicsbody[y][x] = Sprite::create("passflag.png");
+                    physicsbody[y][x]->setVisible(false);
+                    break;
+                case 12:
+                    physicsbody[y][x] = Sprite::create("fireearth.png");
+                    physicsbody[y][x]->setVisible(false);
+                    break;
+                case 13:
+                    physicsbody[y][x] = Sprite::create("fireearth.png");
+                    physicsbody[y][x]->setVisible(false);
+                    break;
                 default:
                     break;
                 }
                 if (physicsbody[y][x])
                 {
-                    if (map[y][x]==9||map[y][x] == 1||map[y][x] == 2 || map[y][x] == 3|| map[y][x] == 7 || map[y][x] == 8||map[y][x]==10)
+                    if (map[y][x]==12||map[y][x]==13||map[y][x]==11||map[y][x]==9||map[y][x] == 1||map[y][x] == 2 || map[y][x] == 3|| map[y][x] == 7 || map[y][x] == 8||map[y][x]==10)
                     {
                         auto sprite = Sprite::create("road_earth.png");
                         sprite->setScale(scale);
@@ -619,8 +665,9 @@ bool Level1_1::init()
         tankWidth = rect.size.width;
         tankHeight = rect.size.height;
         tank->setPosition(Vec2(2 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 12) * tileSize * scale + offsetY + tankHeight / 2));
+        setbirth(Vec2(2 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 12) * tileSize * scale + offsetY + tankHeight / 2));
     }
-
+        
     //add keyboard listenser below
     listener->onKeyPressed = CC_CALLBACK_2(Level1_1::onKeyPressed, this);
     listener->onKeyReleased = CC_CALLBACK_2(Level1_1::onKeyReleased, this);

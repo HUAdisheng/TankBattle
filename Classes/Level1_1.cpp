@@ -121,7 +121,7 @@ void Level1_1::Pausemenu()
 
 
 }
-//È¥Ñ¡Ôñ¹Ø¿¨½çÃæ
+//å»é€‰æ‹©å…³å¡ç•Œé¢
 void Level1_1::buttonselectLCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED) {
@@ -132,7 +132,7 @@ void Level1_1::buttonselectLCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::Tou
     }
     return;
 }
-//ÓÎÏ·¼ÌĞø
+//æ¸¸æˆç»§ç»­
 void Level1_1::buttoncontinueCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
     AudioEngine::resumeAll();
@@ -145,7 +145,7 @@ void Level1_1::buttoncontinueCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::To
     this->removeChildByTag(6);
     this->removeChildByTag(7);
 }
-//È¥Ö÷²Ëµ¥
+//å»ä¸»èœå•
 void Level1_1::buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
@@ -158,14 +158,12 @@ void Level1_1::buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchE
     return;
 }
 void Level1_1::Fire(cocos2d::Vec2 origin, float angle, float speed) {
-    if (cocos2d::Director::getInstance()->getTotalFrames() / 60 - lastFireTime >= 1.0f||m_bullet.size()<=2) {
+    
         m_bullet.push_back(Bullet::create("bullet.png"));
 
         this->addChild(m_bullet[m_bullet.size() - 1]);
 
         m_bullet[m_bullet.size() - 1]->shootFrom(origin, angle, speed);
-    }
-    lastFireTime = cocos2d::Director::getInstance()->getTotalFrames() / 60;
 }
 int Level1_1::getType(Vec2 pos)
 {
@@ -208,14 +206,14 @@ int Level1_1::getType(Vec2 pos)
 }
 bool Level1_1::willContact(Vec2 vec)
 {
-    // »ñÈ¡Ì¹¿ËÎ»ÖÃĞÅÏ¢Óë³ß´ç
+    // è·å–å¦å…‹ä½ç½®ä¿¡æ¯ä¸å°ºå¯¸
     Rect rect = tank->getBoundingBox();
 
-    //½«Ì¹¿ËY×ø±ê×ª»»ÎªµØÍ¼ÉÏµÄY×ø±ê
+    //å°†å¦å…‹Yåæ ‡è½¬æ¢ä¸ºåœ°å›¾ä¸Šçš„Yåæ ‡
     float MinY = rect.getMinY();
     float MaxY = rect.getMaxY();
 
-    // ¼ÆËãÌ¹¿ËµÄËÄ¶¥µã×ø±ê
+    // è®¡ç®—å¦å…‹çš„å››é¡¶ç‚¹åæ ‡
     float MinX = rect.getMinX();
     float MaxX = rect.getMaxX();
 
@@ -238,14 +236,14 @@ bool Level1_1::willContact(Vec2 vec)
 }
 bool Level1_1::willContactTrap(Vec2 vec)
 {
-    // »ñÈ¡Ì¹¿ËÎ»ÖÃĞÅÏ¢Óë³ß´ç
+    // è·å–å¦å…‹ä½ç½®ä¿¡æ¯ä¸å°ºå¯¸
     Rect rect = tank->getBoundingBox();
 
-    //½«Ì¹¿ËY×ø±ê×ª»»ÎªµØÍ¼ÉÏµÄY×ø±ê
+    //å°†å¦å…‹Yåæ ‡è½¬æ¢ä¸ºåœ°å›¾ä¸Šçš„Yåæ ‡
     float MinY = rect.getMinY();
     float MaxY = rect.getMaxY();
 
-    // ¼ÆËãÌ¹¿ËµÄËÄ¶¥µã×ø±ê
+    // è®¡ç®—å¦å…‹çš„å››é¡¶ç‚¹åæ ‡
     float MinX = rect.getMinX();
     float MaxX = rect.getMaxX();
     Vec2 Position;
@@ -365,7 +363,7 @@ void Level1_1::ContactBullet()
 }
 bool Level1_1::willContactBullet(Bullet* bullet)
 {
-    // »ñÈ¡×Óµ¯Î»ÖÃĞÅÏ¢Óë³ß´ç
+    // è·å–å­å¼¹ä½ç½®ä¿¡æ¯ä¸å°ºå¯¸
     Rect rect = bullet->getBoundingBox();
 
 
@@ -399,11 +397,11 @@ void Level1_1::destroyMap(Bullet* bullet)
 {
     Rect rect = bullet->getBoundingBox();
 
-    //½«Ì¹¿ËY×ø±ê×ª»»ÎªµØÍ¼ÉÏµÄY×ø±ê
+    //å°†å¦å…‹Yåæ ‡è½¬æ¢ä¸ºåœ°å›¾ä¸Šçš„Yåæ ‡
     float MinY = rect.getMinY();
     float MaxY = rect.getMaxY();
 
-    // ¼ÆËãÌ¹¿ËµÄËÄ¶¥µã×ø±ê
+    // è®¡ç®—å¦å…‹çš„å››é¡¶ç‚¹åæ ‡
     float MinX = rect.getMinX();
     float MaxX = rect.getMaxX();
     Sprite* sprite;
@@ -421,7 +419,7 @@ void Level1_1::destroyMap(Bullet* bullet)
         int ix = (int)x;
         int iy = (int)y;
         switch (map[iy][ix]) {
-            // ´Ë´¦¸ù¾İ·½¿éÀàĞÍÖ´ĞĞ·½¿é´İ»ÙµÄ²Ù×÷ 
+            // æ­¤å¤„æ ¹æ®æ–¹å—ç±»å‹æ‰§è¡Œæ–¹å—æ‘§æ¯çš„æ“ä½œ 
        
 
         case 2:
@@ -563,21 +561,21 @@ bool Level1_1::init()
         auto background1 = cocos2d::AudioEngine::play2d("run.mp3", true, 1.0f);
         auto visibleSize = Director::getInstance()->getVisibleSize();
         Vec2 origin = Director::getInstance()->getVisibleOrigin();
-        //µØÍ¼×©¿éµÄ´óĞ¡
+        //åœ°å›¾ç –å—çš„å¤§å°
         tileSize = 32;
-        //»ñÈ¡´°¿Ú´óĞ¡
+        //è·å–çª—å£å¤§å°
         auto winSize = Director::getInstance()->getVisibleSize();
-        //¼ÆËãµØÍ¼×Ü´óĞ¡
+        //è®¡ç®—åœ°å›¾æ€»å¤§å°
         int mapWidth = sizeof(map[0]) / sizeof(int) * tileSize;
         int mapHeight = sizeof(map) / sizeof(map[0]) * tileSize;
-        //¼ÆËãµØÍ¼µÄËõ·Å±ÈÀı
+        //è®¡ç®—åœ°å›¾çš„ç¼©æ”¾æ¯”ä¾‹
         float scaleX = winSize.width / mapWidth;
         float scaleY = winSize.height / mapHeight;
         scale = MIN(scaleX, scaleY);
-        //¼ÆËãµØÍ¼ÔÚ´°¿ÚµÄÖĞĞÄÎ»ÖÃ
+        //è®¡ç®—åœ°å›¾åœ¨çª—å£çš„ä¸­å¿ƒä½ç½®
         offsetX = (winSize.width - mapWidth * scale) / 2;
         offsetY = (winSize.height - mapHeight * scale) / 2;
-        //äÖÈ¾µØÍ¼
+        //æ¸²æŸ“åœ°å›¾
         for (int y = 0; y < mapy; ++y)
         {
             for (int x = 0; x < mapx; ++x)

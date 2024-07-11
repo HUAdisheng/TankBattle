@@ -12,6 +12,7 @@ public:
     void moveright();
     void moveup();
     void movedown();
+    void speedup(float times);
     void stopmoving();
     bool isReachBoundry();
     void deletetank();

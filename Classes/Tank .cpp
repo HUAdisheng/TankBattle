@@ -14,6 +14,10 @@ Tank* Tank::create(const std::string& TankImage) {
 void Tank::movedown() {
     vec = Vec2(0, -2.5f);
 }
+void Tank::speedup(float times)
+{
+    vec = Vec2(times * vec.x, times * vec.y);
+}
 void Tank::moveup() {
     vec = Vec2(0, 2.5f);
 }

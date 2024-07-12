@@ -56,4 +56,12 @@ void Bullet::deletebullet() {
 
     removeFromParentAndCleanup(true);
 }
+void Bullet::settype(int x)
+{
+    type = x;
+}
+int Bullet::gettype()
+{
+    return type;
+}
 

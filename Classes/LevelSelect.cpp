@@ -15,7 +15,7 @@ void LevelSelected::button1Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::Touc
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
     {
         AudioEngine::stopAll();
-        auto hello = Level1_1::createScene();
+        auto hello = Level2_1::createScene();
         TransitionFade* trs = TransitionFade::create(1.0, hello);
         Director::getInstance()->replaceScene(trs);
     }
@@ -37,7 +37,7 @@ void LevelSelected::button3Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::Touc
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
     {
         AudioEngine::stopAll();
-        auto hello = Level1_1::createScene();
+        auto hello = Level2_1::createScene();
         TransitionFade* trs = TransitionFade::create(1.0, hello);
         Director::getInstance()->replaceScene(trs);
     }
@@ -48,7 +48,7 @@ void LevelSelected::button4Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::Touc
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
     {
         AudioEngine::stopAll();
-        auto hello = Level1_1::createScene();
+        auto hello = Level4_1::createScene();
         TransitionFade* trs = TransitionFade::create(1.0, hello);
         Director::getInstance()->replaceScene(trs);
     }
@@ -59,7 +59,7 @@ void LevelSelected::button5Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::Touc
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
     {
         AudioEngine::stopAll();
-        auto hello = Level1_1::createScene();
+        auto hello = Level5_1::createScene();
         TransitionFade* trs = TransitionFade::create(1.0, hello);
         Director::getInstance()->replaceScene(trs);
     }
@@ -70,7 +70,7 @@ void LevelSelected::button6Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::Touc
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
     {
         AudioEngine::stopAll();
-        auto hello = Level1_1::createScene();
+        auto hello = Level2_1::createScene();
         TransitionFade* trs = TransitionFade::create(1.0, hello);
         Director::getInstance()->replaceScene(trs);
     }
@@ -81,7 +81,7 @@ void LevelSelected::button7Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::Touc
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
     {
         AudioEngine::stopAll();
-        auto hello = Level1_1::createScene();
+        auto hello = Level2_1::createScene();
         TransitionFade* trs = TransitionFade::create(1.0, hello);
         Director::getInstance()->replaceScene(trs);
     }
@@ -92,7 +92,7 @@ void LevelSelected::button8Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::Touc
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
     {
         AudioEngine::stopAll();
-        auto hello = Level1_1::createScene();
+        auto hello = Level2_1::createScene();
         TransitionFade* trs = TransitionFade::create(1.0, hello);
         Director::getInstance()->replaceScene(trs);
     }
@@ -103,7 +103,7 @@ void LevelSelected::button9Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::Touc
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
     {
         AudioEngine::stopAll();
-        auto hello = Level1_1::createScene();
+        auto hello = Level2_1::createScene();
         TransitionFade* trs = TransitionFade::create(1.0, hello);
         Director::getInstance()->replaceScene(trs);
     }
@@ -114,7 +114,7 @@ void LevelSelected::button10Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::Tou
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
     {
         AudioEngine::stopAll();
-        auto hello = Level1_1::createScene();
+        auto hello = Level2_1::createScene();
         TransitionFade* trs = TransitionFade::create(1.0, hello);
         Director::getInstance()->replaceScene(trs);
     }

@@ -15,7 +15,7 @@ void LevelSelected::button1Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::Touc
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
     {
         AudioEngine::stopAll();
-        auto hello = Level2_1::createScene();
+        auto hello = Level1_1::createScene();
         TransitionFade* trs = TransitionFade::create(1.0, hello);
         Director::getInstance()->replaceScene(trs);
     }

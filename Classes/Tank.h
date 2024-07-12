@@ -15,6 +15,7 @@ public:
     void stopmoving();
     bool isReachBoundry();
     void deletetank();
+    void speedup(float times);
 private:
     Vec2 vec;
     Vec2 Tank_Current_Postion;

@@ -38,6 +38,10 @@ void Tank::update(float delta, bool staticFlag) {
         Tank::setPosition(Tank::getPosition() + vec);
     }
 }
+void Tank::speedup(float times)
+{
+    vec = Vec2(times * vec.x, times * vec.y);
+}
 void Tank::deletetank() {
     auto boom = Sprite::create("boom_1.png");
     boom->setPosition(Tank::getPosition());

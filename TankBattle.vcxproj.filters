@@ -16,6 +16,18 @@
     <ClCompile Include="Classes\HelloWorldScene.cpp">
       <Filter>Source Files\Classes</Filter>
     </ClCompile>
+    <ClCompile Include="Classes\LevelSelect.cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Classes\Bullet.cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Classes\Level1_1.cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Classes\Tank .cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\TankBattle\TankBattle\proj.win32\main.h">
@@ -49,6 +61,18 @@
       <Filter>Source Files\Classes</Filter>
     </ClInclude>
     <ClInclude Include="Classes\HelloWorldScene.h">
+      <Filter>Source Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Classes\LevelSelect.h">
+      <Filter>Source Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Classes\Bullet.h">
+      <Filter>Source Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Classes\Level1_1.h">
+      <Filter>Source Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Classes\Tank.h">
       <Filter>Source Files\Classes</Filter>
     </ClInclude>
   </ItemGroup>
@@ -90,12 +114,75 @@
     <Image Include="Resources\background_first.png">
       <Filter>Resources</Filter>
     </Image>
+    <Image Include="Resources\grass.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\pausemenu.PNG">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\SelectLbg.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\steel.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\wall.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\water.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\tank.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\boom_1.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\boom_2.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\boom_3.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\boom_4.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\boom_5.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\bullet.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\chaser.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\gold.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\passflag.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\road_earth.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\thorn.png">
+      <Filter>Resources</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Media Include="Resources\sound\normal_happy.mp3">
       <Filter>Resources</Filter>
     </Media>
     <Media Include="Resources\sound\tense.mp3">
+      <Filter>Resources</Filter>
+    </Media>
+    <Media Include="Resources\Dreams.mp3">
+      <Filter>Resources</Filter>
+    </Media>
+    <Media Include="Resources\DreamSpace.mp3">
+      <Filter>Resources</Filter>
+    </Media>
+    <Media Include="Resources\run.mp3">
       <Filter>Resources</Filter>
     </Media>
   </ItemGroup>

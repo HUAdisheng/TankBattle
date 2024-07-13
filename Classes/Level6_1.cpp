@@ -310,7 +310,7 @@ void Level6_1::ContactBullet()
         }
         else if ((tank->getBoundingBox().intersectsRect(m_bullet[i]->getBoundingBox())||(tank->getBoundingBox().intersectsRect(Boss->getBoundingBox())))){
             if (!godtype) {
-                if (m_bullet[i]->gettype() != 3) {
+                if (m_bullet[i]->gettype() != 3) { 
                     m_bullet[i]->deletebullet();
                     m_bullet.erase(m_bullet.begin() + i);
                 }
@@ -325,9 +325,9 @@ void Level6_1::ContactBullet()
             }
         }
         else if (Boss->getBoundingBox().intersectsRect(m_bullet[i]->getBoundingBox()) && m_bullet[i]->gettype() == 1) {
-            m_bullet[i]->removeFromParentAndCleanup(true);
+            m_bullet[i]->setVisible(false);
             m_bullet.erase(m_bullet.begin() + i);
-            Bosslife--;
+            Bosslife--;                                                     
             bossspeed += 1.5f;
         }
        
@@ -357,7 +357,7 @@ bool Level6_1::willContactBullet(Bullet* bullet)
     
     for (int i = 0; i < 4; i++){
         getType(point[i]);
-        if (iy + 1 >= mapy || ix >= mapx || iy < 0 || ix < 0) {
+         if(iy + 1 >= mapy || ix >= mapx || iy < 0 || ix < 0) {
             return true;
         }
         switch (map[iy+1][ix]) {
@@ -559,7 +559,7 @@ void Level6_1::update(float delta) {
         time1 += delta;
         if (time1 >= 1.0f) {
             time1 = 0.0f;
-            for (int i = 0; i < 7; i++) {
+            for (int i = 0; i < 5; i++) {
                 int x = rand() % 17;
 
                 Vec2 vec1 = Vec2(physicsbody[x][1]->getBoundingBox().getMidY(), physicsbody[x][1]->getBoundingBox().getMidX());
@@ -567,8 +567,8 @@ void Level6_1::update(float delta) {
                 int y = rand() % 180;
                 float fy = (float)y;
 
-                this->Fire(vec1, y, 100, 2);
-                this->Fire(vec2, -y, 100, 2);
+                this->Fire(vec1, y, 80, 2);
+                this->Fire(vec2, -y, 80, 2);
             }
         }
     }
@@ -589,7 +589,7 @@ void Level6_1::update(float delta) {
                 if(two)
                 restDuration = 5.0f;
                 if(three)
-                    restDuration = 1.0f;
+                    restDuration = 3.0f;
                 bossspeed = 100.0f;
                
             }
@@ -645,16 +645,26 @@ void Level6_1::update(float delta) {
                 if(two)
                     chaseDuration = 5.0f;
                 if(three)
-                chaseDuration = 2.0f;
+                chaseDuration = 4.0f;
             }
         }
 
         elapsedTime += delta;
         if (elapsedTime >= 4.0f) {
-            for (float angle = 0.0f; angle < 360.0f; angle += 15.0f) {
+            if (two) {
+                for (float angle = 0.0f; angle < 360.0f; angle += 30.0f) {
 
-                this->Fire(Boss->getPosition()-Vec2(100,0), angle, 100, 2);
-                this->Fire(Boss->getPosition()+Vec2(100,0), angle, 100, 2);
+                    this->Fire(Boss->getPosition() - Vec2(100, 0), angle, 50, 2);
+                    this->Fire(Boss->getPosition() + Vec2(100, 0), angle, 50, 2);
+                }
+            }
+            if (three) {
+                for (float angle = 0.0f; angle < 360.0f; angle += 30.0f) {
+                    this->Fire(Boss->getPosition() + Vec2(0,100), angle, 50, 2);
+                    this->Fire(Boss->getPosition() - Vec2(100, 0), angle, 50, 2);
+                    this->Fire(Boss->getPosition() + Vec2(100, 0), angle, 50, 2);
+                    this->Fire(Boss->getPosition() - Vec2( 0,100), angle, 50, 2);
+                }
             }
             elapsedTime = 0.0f;
         }
@@ -687,8 +697,8 @@ bool Level6_1::init()
         offsetX = (winSize.width - mapWidth * scale) / 2;
         offsetY = (winSize.height - mapHeight * scale) / 2;
         //‰÷»æµÿÕº
-        lifes = 1000;
-        Bosslife = 100                  ;
+        lifes = 3;
+        Bosslife =300                  ;
         for (int y = 0; y < mapy; ++y)
         {
             for (int x = 0; x < mapx; ++x)

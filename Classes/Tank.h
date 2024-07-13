@@ -19,8 +19,8 @@ public:
     float setTankspeed(float speed);
     void setGod_mode(int God_mode_time);
     float Tank_Speed;
+
 private:
-   // float Tank_Speed;
     Vec2 vec;
     Vec2 Tank_Current_Postion;
     int Lives;

@@ -1,15 +1,18 @@
 #include "FirstScene.h"
 USING_NS_CC;
+
 Scene* FirstScene::createScene()
 {
     return FirstScene::create();
 }
+
 // Print useful error message instead of segfaulting when files are not there.
 static void problemLoading(const char* filename)
 {
     printf("Error while loading: %s\n", filename);
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
+
 //返回主菜单
 void FirstScene::buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
@@ -21,6 +24,7 @@ void FirstScene::buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::Touc
     }
     return;
 }
+
 //游戏结束
 void FirstScene::event_gameover()//游戏失败
 {
@@ -67,6 +71,7 @@ void FirstScene::event_gameover()//游戏失败
     buttonback->addTouchEventListener(CC_CALLBACK_2(FirstScene::buttonbackCallback, this));
     this->addChild(buttonback);
 };
+
 //去关卡1
 void FirstScene::replace1(Ref *psender)//跳转到第一个map
 {
@@ -75,6 +80,7 @@ void FirstScene::replace1(Ref *psender)//跳转到第一个map
     Director::getInstance()->replaceScene(trs);
     return;
 }
+
 //去选择关卡界面
 void FirstScene::buttonselectLCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
@@ -86,6 +92,7 @@ void FirstScene::buttonselectLCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::T
     }
     return;
 }
+
 //游戏继续
 void FirstScene::buttoncontinueCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
@@ -98,6 +105,7 @@ void FirstScene::buttoncontinueCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::
     this->removeChildByTag(6);
     this->removeChildByTag(7);
 }
+
 //去第一关
 void FirstScene::button1Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
@@ -108,6 +116,7 @@ void FirstScene::button1Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEv
     }
     return;
 }
+
 //退出游戏
 void FirstScene::button2Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
@@ -117,6 +126,7 @@ void FirstScene::button2Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEv
     }
     return;
 }
+
 //测试用
 void FirstScene::button3Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
@@ -131,6 +141,7 @@ void FirstScene::button3Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEv
     }
     return;
 }
+
 void FirstScene::buttonhelpCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
     AudioEngine::stopAll();
@@ -193,6 +204,7 @@ void FirstScene::buttonhelpCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::Touc
     this->addChild(buttonback);
 
 }
+
 void FirstScene::Pausemenu()
 {
     auto visibleSize = Director::getInstance()->getVisibleSize();
@@ -285,6 +297,7 @@ void FirstScene::Pausemenu()
 
 
 }
+
 // on "init" you need to initialize your instance
 bool FirstScene::init()
 {
@@ -426,6 +439,7 @@ bool FirstScene::init()
     return true;
 
 }
+
 void FirstScene::menuCloseCallback(Ref* pSender)
 {
     //Close the cocos2d-x game scene and quit the application

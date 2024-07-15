@@ -1,9 +1,11 @@
 #include "Bullet.h"
 USING_NS_CC;
 
-Bullet*Bullet::create(const std::string& bulletImage) {
+Bullet*Bullet::create(const std::string& bulletImage) 
+{
     Bullet* bullet = new (std::nothrow) Bullet();
-    if (bullet && bullet->initWithFile(bulletImage)) {
+    if (bullet && bullet->initWithFile(bulletImage)) 
+    {
         bullet->autorelease();
        
         return bullet;
@@ -11,20 +13,26 @@ Bullet*Bullet::create(const std::string& bulletImage) {
     CC_SAFE_DELETE(bullet);
     return nullptr;
 }
-void Bullet::shoot() {
+
+void Bullet::shoot() 
+{
     auto visibleSize = Director::getInstance()->getVisibleSize();
-    this->schedule([=](float dt) {
+    this->schedule([=](float dt) 
+    {
         auto newPosition = getPosition() + m_velocity * dt;
         if (newPosition.x < 0 || newPosition.x > visibleSize.width ||
-            newPosition.y < 0 || newPosition.y > visibleSize.height) {
+            newPosition.y < 0 || newPosition.y > visibleSize.height) 
+        {
             unschedule("update_bullet");  
            deletebullet();
         }
-        else {
+        else 
+        {
             setPosition(newPosition);
         }
         }, "update_bullet");
 }
+
 void Bullet::shootFrom(Vec2 origin, float angle, float speed)
 {
     setPosition(origin);
@@ -32,7 +40,9 @@ void Bullet::shootFrom(Vec2 origin, float angle, float speed)
     m_velocity = Vec2::forAngle(CC_DEGREES_TO_RADIANS(angle)) * m_speed;
     shoot();
 }
-void Bullet::deletebullet() {
+
+void Bullet::deletebullet() 
+{
     auto boom = Sprite::create("boom_1.png");
     boom->setPosition(Bullet::getPosition());
     this->getParent()->addChild(boom);
@@ -47,7 +57,8 @@ void Bullet::deletebullet() {
     tankboom_animation->setDelayPerUnit(0.08f);
     tankboom_animation->setLoops(1);
     tankboom_animation->setRestoreOriginalFrame(false);
-    auto removeBoom = CallFunc::create([=]() {
+    auto removeBoom = CallFunc::create([=]() 
+    {
         boom->removeFromParentAndCleanup(true);
         });
     auto tankboom_animate = Animate::create(tankboom_animation);
@@ -56,10 +67,12 @@ void Bullet::deletebullet() {
 
     removeFromParentAndCleanup(true);
 }
+
 void Bullet::settype(int x)
 {
     type = x;
 }
+
 int Bullet::gettype()
 {
     return type;

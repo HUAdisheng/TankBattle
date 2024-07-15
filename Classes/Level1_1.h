@@ -4,9 +4,11 @@
 #include "Bullet.h"
 #include"Tank.h"
 #include <vector>
+
 extern enum KeyState;
 const int mapy = 30;
 const int mapx = 39;
+
 class Level1_1 :
      public cocos2d::Scene
 {
@@ -65,7 +67,8 @@ private:
     float scale;
     float tankWidth;
     float tankHeight;
-    int map[mapy][mapx] = {
+    int map[mapy][mapx] = 
+    {
         {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
         {3, 2, 2, 2, 2, 2, 5, 5, 2, 5, 5, 5, 2,5,5,5,2,5,2,5,5,2,5,2,2,2,2,5,2,2,2,2,5,2,5,5,5,5,3},
         {3, 5, 5, 2, 5, 5, 5, 2, 5, 2, 5, 5, 2,2,5,5,2,5,2,5,2,5,5,5,5,5,2,5,5,5,5,2,5,2,5,2,5,2,3},

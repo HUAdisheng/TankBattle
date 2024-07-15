@@ -1,4 +1,5 @@
-﻿#pragma once
+
+#pragma once
 #include"cocos2d.h"
 #include"FirstScene.h"
 #include "Bullet.h"
@@ -46,7 +47,7 @@ public:
     void willContactOther(Vec2 vec);
     CREATE_FUNC(Level3_1);
 private:
-    std::map<int, cocos2d::Vec2> portalPositions; // ´æ´¢´«ËÍÃÅµÄÎ»ÖÃ
+    std::map<int, cocos2d::Vec2> portalPositions; // 
     int mapy = 37;
     int mapx = 37;
     int ix = 0;

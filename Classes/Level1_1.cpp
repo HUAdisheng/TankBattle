@@ -308,7 +308,6 @@ bool Level1_1::willContactTrap(Vec2 vec)
     }
     return false;
 }
-
 bool Level1_1::willContactBullet(Bullet* bullet)
 {
     // 获取子弹位置信息与尺寸
@@ -341,7 +340,6 @@ bool Level1_1::willContactBullet(Bullet* bullet)
     }
     return false;
 }
-
 void Level1_1::willContactOther(Vec2 vec)
 {
     // 获取坦克位置信息与尺寸
@@ -372,8 +370,10 @@ void Level1_1::willContactOther(Vec2 vec)
         case 28:
             if (true)
             {
+                
+             
                 AudioEngine::stopAll();
-                auto hello = Level1_1::createScene();
+                auto hello = Level2_1::createScene();
                 TransitionFade* trs = TransitionFade::create(1.0f, hello);
                 Director::getInstance()->replaceScene(trs);
             }
@@ -387,9 +387,6 @@ void Level1_1::willContactOther(Vec2 vec)
     }
     return;
 }
-
-
-
 void Level1_1::ContactBullet()
 {
     for (int i = 0; i < m_bullet.size(); i++) {
@@ -421,7 +418,6 @@ void Level1_1::ContactBullet()
         //}
     }
 }
-
 void Level1_1::destroyMap(Bullet* bullet)
 {
     Rect rect = bullet->getBoundingBox();
@@ -457,7 +453,6 @@ void Level1_1::destroyMap(Bullet* bullet)
         }
     }
 }
-
 void Level1_1::setTankPos(Tank* atank, int x, int y)
 {
     Rect rect = atank->getBoundingBox();
@@ -465,7 +460,6 @@ void Level1_1::setTankPos(Tank* atank, int x, int y)
     tankHeight = rect.size.height;
     atank->setPosition(Vec2(x * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - y) * tileSize * scale + offsetY + tankHeight / 2));
 }
-
 void Level1_1::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
     Keystate[keyCode] = true;
     switch (keyCode) {
@@ -647,7 +641,7 @@ bool Level1_1::init()
                 this->addChild(physicsbody[y][x]);
             }
             if (map[y][x] == 17) {
-                sprintTank = Tank::create("specialtankpng.png");
+                sprintTank = Tank::create("chaser.png");
                 sprintTank->setScale(scale * 28 / 600);
                 setTankPos(sprintTank, x, y);
                 sprintTank->setRotation(-90);
@@ -660,7 +654,7 @@ bool Level1_1::init()
                 enemyTank.push_back(atank);
             }
             else if (map[y][x] == 28) {
-                Sprite* flag = Sprite::create("flag.png");
+                Sprite* flag = Sprite::create("passflag.png");
                 flag->setScale(scale * 28 / 32);
                 flag->setPosition(Vec2(x * tileSize * scale + offsetX, (mapy - 1 - y) * tileSize * scale + offsetY));
                 flag->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
@@ -764,7 +758,6 @@ void Level1_1::enemyTankLogic()
         if (tank->getBoundingBox().getMaxY() > sprintTank->getBoundingBox().getMinY()) {
             sprintTank->moveleft();
             sprintTank->speedup(10);
-            
         }
         if (sprintTank->getBoundingBox().getMinX() < 12 * tileSize * scale) {
             sprintTankLogic1 = false;
@@ -879,6 +872,7 @@ void Level1_1::closeThorn()
 
 void Level1_1::event_gameover()
 {
+    AudioEngine::stopAll();
     Level1_1::unscheduleUpdate();
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();

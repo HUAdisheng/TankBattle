@@ -1,91 +1,86 @@
 #include "Level3_1.h"
 USING_NS_CC;
+
+MagneticTrap* MagneticTrap::create(const Vec2& position, float radius, float force)
+{
+    MagneticTrap* pRet = new(std::nothrow) MagneticTrap();
+    if (pRet && pRet->init(position, radius, force))
+    {
+        pRet->autorelease();
+        return pRet;
+    }
+    else
+    {
+        delete pRet;
+        return nullptr;
+    }
+}
+
+bool MagneticTrap::init(const Vec2& position, float radius, float force)
+{
+    if (!Node::init())
+    {
+        return false;
+    }
+
+    _position = position;
+    _radius = radius;
+    _force = force;
+
+    this->setPosition(position);
+
+    // Set a schedule to update the trap every frame
+    this->schedule(CC_SCHEDULE_SELECTOR(MagneticTrap::update));
+
+    return true;
+}
+
+void MagneticTrap::update(float dt)
+{
+    attractTanks(dt);
+}
+
+void MagneticTrap::attractTanks(float dt)
+{
+    // Get all tanks in the scene (assuming tanks are added to the same parent)
+    auto parent = this->getParent();
+    if (parent)
+    {
+        for (auto& child : parent->getChildren())
+        {
+            Tank* tank = dynamic_cast<Tank*>(child);
+            if (tank && tank->isAlive())
+            {
+                Vec2 tankPos = tank->getPosition();
+                float distance = tankPos.distance(_position);
+
+                if (distance < _radius)
+                {
+                    Vec2 direction = _position - tankPos;
+                    direction.normalize();
+                    Vec2 forceVec = direction * _force * (1 - distance / _radius); // Reduce force based on distance
+
+                    tank->setPosition(tankPos + forceVec * dt);
+                }
+            }
+        }
+    }
+}
+
+void Level3_1::teleportPlayer(Node* player, const Vec2& targetPosition)
+{
+    player->setPosition(targetPosition);
+}
+
 Scene* Level3_1::createScene()
 {
     return Level3_1::create();
 }
-static void problemLoading(const char* filename)
-{
-    printf("Error while loading: %s\n", filename);
-    printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
-}
-void Level3_1::buttonnextCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
-{
-    if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
-    {
-        auto next = Level3_1::createScene();
-        TransitionFade* trs = TransitionFade::create(1.0, next);
-        Director::getInstance()->replaceScene(trs);
-    }
-    return;
-}
-void Level3_1::event_win()//游戏win!
-{
-    Level3_1::unscheduleUpdate();
-    auto visibleSize = Director::getInstance()->getVisibleSize();
-    Vec2 origin = Director::getInstance()->getVisibleOrigin();
-    auto label1 = Label::createWithTTF("WIN!!", "fonts/Marker Felt.ttf", 60);
-    if (label1 == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        label1->setPosition(Vec2(origin.x + visibleSize.width / 2,
-            origin.y + (visibleSize.height) / 2));
-
-        // add the label as a child to this layer
-        this->addChild(label1);
-    }
-    auto label2 = Label::createWithTTF("Next Level", "fonts/Marker Felt.ttf", 60);
-    if (label2 == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        label2->setPosition(Vec2(origin.x + visibleSize.width / 2,
-            origin.y + (visibleSize.height) / 2 - label1->getContentSize().height));
-
-        // add the label as a child to this layer
-        this->addChild(label2);
-    }
-    auto buttonnext = ui::Button::create("defaultbutton_normal.png", "defaultbutton_seleted.png", "disabled_image.png");
-    buttonnext->setScale(visibleSize.width / buttonnext->getContentSize().width / 21, visibleSize.height / buttonnext->getContentSize().height / 16);
-    buttonnext->setPosition(Vec2(origin.x + (visibleSize.width / 2) - (label2->getContentSize().width / 2) - buttonnext->getContentSize().width,
-        origin.y + (visibleSize.height) / 2 - label1->getContentSize().height));
-    buttonnext->setPressedActionEnabled(true);
-    buttonnext->addTouchEventListener(CC_CALLBACK_2(Level3_1::buttonnextCallback, this));
-    this->addChild(buttonnext);
-    auto label3 = Label::createWithTTF("go back to the start menu", "fonts/Marker Felt.ttf", 60);
-    if (label3 == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        label3->setPosition(Vec2(origin.x + visibleSize.width / 2,
-            origin.y + (visibleSize.height) / 2 - label1->getContentSize().height - label2->getContentSize().height));
-
-        // add the label as a child to this layer
-        this->addChild(label3);
-    }
-    auto buttonback = ui::Button::create("defaultbutton_normal.png", "defaultbutton_seleted.png", "disabled_image.png");
-    buttonback->setScale(visibleSize.width / buttonback->getContentSize().width / 21, visibleSize.height / buttonback->getContentSize().height / 16);
-    buttonback->setPosition(Vec2(origin.x + (visibleSize.width / 2) - (label3->getContentSize().width / 2) - buttonback->getContentSize().width,
-        origin.y + (visibleSize.height) / 2 - label1->getContentSize().height - label2->getContentSize().height));
-    buttonback->setPressedActionEnabled(true);
-    buttonback->addTouchEventListener(CC_CALLBACK_2(Level3_1::buttonbackCallback, this));
-    this->addChild(buttonback);
-};
 Vec2 Level3_1::calculation(Tank* tank) {
     auto newPosition = tank->getPosition();
     auto r = tank->getRotation();
     auto size = tank->getContentSize();
-    auto offset = tank->getScale() * size.height / 2 + 26;
+    auto offset = tank->getScale() * size.height / 2 + 20;
     if (r == 0.0f) {
         newPosition += Vec2(0, offset);
     }
@@ -99,6 +94,11 @@ Vec2 Level3_1::calculation(Tank* tank) {
         newPosition -= Vec2(offset, 0);
     }
     return newPosition;
+}
+static void problemLoading(const char* filename)
+{
+    printf("Error while loading: %s\n", filename);
+    printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
 void Level3_1::Pausemenu()
 {
@@ -189,29 +189,7 @@ void Level3_1::Pausemenu()
     buttonBack->setPressedActionEnabled(true);
     buttonBack->addTouchEventListener(CC_CALLBACK_2(Level3_1::buttonbackCallback, this));
     this->addChild(buttonBack, 0, 6);
-    //Help
-    auto labeltip = Label::createWithTTF("tip", "fonts/Marker Felt.ttf", 60);
-    if (labeltip == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        labeltip->setPosition(Vec2(origin.x + visibleSize.width / 2,
-            origin.y + (visibleSize.height) -  labeltip->getContentSize().height));
 
-        // add the label as a child to this layer
-        this->addChild(labeltip, 0, 1);
-    }
-
-    auto buttontip = ui::Button::create("defaultbutton_normal.png", "defaultbutton_seleted.png", "disabled_image.png");//NEW GAME
-    buttontip->setScale(visibleSize.width / buttontip->getContentSize().width / 21, visibleSize.height / buttontip->getContentSize().height / 16);
-    buttontip->setPosition(Vec2(origin.x + visibleSize.width / 2-labeltip->getContentSize().width/2-buttontip->getContentSize().width,
-        origin.y + (visibleSize.height) - labeltip->getContentSize().height));
-    buttontip->setPressedActionEnabled(true);
-    buttontip->addTouchEventListener(CC_CALLBACK_2(Level3_1::buttontipCallback, this));
-    this->addChild(buttontip, 0, 2);
 
 
 }
@@ -239,11 +217,6 @@ void Level3_1::buttoncontinueCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::To
     this->removeChildByTag(6);
     this->removeChildByTag(7);
 }
-void Level3_1::buttontipCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
-{
-   
-}
-
 //去主菜单
 void Level3_1::buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
@@ -256,24 +229,12 @@ void Level3_1::buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchE
     }
     return;
 }
-void Level3_1::Fire(cocos2d::Vec2 origin, float angle, float speed,int type) {
-    if (cocos2d::Director::getInstance()->getTotalFrames() / 60 - lastFireTime >= 1.0f || m_bullet.size() <= 2) {
-
-        if (type == 1)
-        {
-            m_bullet.push_back(Bullet::create("gold.png"));
-            m_bullet[m_bullet.size() - 1]->setScale(0.5);
-        }
-        else if (type == 2)
-        {
-
-            m_bullet.push_back(Bullet::create("bullet.png"));
-            m_bullet[m_bullet.size() - 1]->settype(2);
-            m_bullet[m_bullet.size() - 1]->setScale(0.5);
-        }
+void Level3_1::Fire(cocos2d::Vec2 origin, float angle, float speed) {
+    if (cocos2d::Director::getInstance()->getTotalFrames() / 60 - lastFireTime >= 1.0f) {
+        m_bullet.push_back(Bullet::create("bullet.png"));
 
         this->addChild(m_bullet[m_bullet.size() - 1]);
-
+        m_bullet[m_bullet.size() - 1]->setScale(0.1);
         m_bullet[m_bullet.size() - 1]->shootFrom(origin, angle, speed);
     }
     lastFireTime = cocos2d::Director::getInstance()->getTotalFrames() / 60;
@@ -288,10 +249,7 @@ int Level3_1::getType(Vec2 pos)
         x--;
     ix = (int)x;
     iy = (int)y;
-    if (iy + 1 < 0 || ix < 0 || iy + 1 >= mapy || ix >= mapx) {
-        ix = 0; 
-        iy = 0;
-    }
+
     switch (map[iy + 1][ix]) {
     case 1:
         return 1;
@@ -301,37 +259,16 @@ int Level3_1::getType(Vec2 pos)
         return 3;
     case 4:
         return 4;
-        //触发机关
     case 5:
         return 5;
-    case 25:
-        return 25;
     case 6:
         return 6;
     case 7:
         return 7;
-    case 17:
-        return 17;
-    case 27:
-        return 27;
-    case 47:
-        return 47;
-    case 57:
-        return 57;
-    case 67:
-        return 67;
     case 8:
         return 8;
-        //不同按钮
-
     case 9:
         return 9;
-    case 19:
-        return 19;
-    case 29:
-        return 29;
-    case 39:
-        return 39;
     case 10:
         return 10;
     case 11:
@@ -344,237 +281,15 @@ int Level3_1::getType(Vec2 pos)
         return 14;
     case 15:
         return 15;
-        //不同苹果
-    case 21:
-        return 21;
-        //不同传送门
-    case 31:
-        return 31;
-    case 32:
-        return 32;
-    case 33:
-        return 33;
-    case 34:
-        return 34;
-    case 35:
-        return 35;
-    case 36:
-        return 36;
-    case 37:
-        return 37;
-    case 38:
-        return 38;
-        //含不同道具方块
-    case 112:
-        return 112;
-    case 212:
-        return 212;
-    case 312:
-        return 312;
-    case 412:
-        return 412;
-    case 109:
-        return 109;
-    case 108:
-        return 108;
-    case 107:
-        return 107;
-    case 106:
-        return 106;
-        //
-    case 888:
-        return 888;
+    case 16:
+        return 16;
+    case 17:
+        return 17;
+    case 18:
+        return 18;
     default:
         return 0;
     }
-}
-void Level3_1::ContactBullet()
-{
-    for (int i = 0; i < m_bullet.size(); i++) {
-        if (willContactBullet(m_bullet[i])) {
-            Vec2 pos = m_bullet[i]->getPosition();
-            destroyMap(m_bullet[i]);
-            m_bullet[i]->deletebullet();
-            m_bullet.erase(m_bullet.begin() + i);
-        }
-        else if (tank->getBoundingBox().intersectsRect(m_bullet[i]->getBoundingBox())) {
-            m_bullet[i]->deletebullet();
-            m_bullet.erase(m_bullet.begin() + i);
-            again();
-        }
-        else {
-            for (int j = i + 1; j < m_bullet.size(); j++) {
-                if (m_bullet[i]->getBoundingBox().intersectsRect(m_bullet[j]->getBoundingBox())) {
-                    m_bullet[i]->deletebullet();
-                    m_bullet[j]->deletebullet();
-                    m_bullet.erase(m_bullet.begin() + i);
-                    if (i < j) {
-                        j--;
-                    }
-                    m_bullet.erase(m_bullet.begin() + j);
-                    break;
-                }
-            }
-        }
-    }
-}
-bool Level3_1::willContact(Vec2 vec)
-{
-    // 获取坦克位置信息与尺寸
-    Rect rect = tank->getBoundingBox();
-
-    //将坦克Y坐标转换为地图上的Y坐标
-    float MinY = rect.getMinY();
-    float MaxY = rect.getMaxY();
-
-    // 计算坦克的四顶点坐标
-    float MinX = rect.getMinX();
-    float MaxX = rect.getMaxX();
-
-    Vec2 point[4];
-    point[0] = Vec2(MinX + vec.x, MinY + vec.y);
-    point[1] = Vec2(MinX + vec.x, MaxY + vec.y);
-    point[2] = Vec2(MaxX + vec.x, MinY + vec.y);
-    point[3] = Vec2(MaxX + vec.x, MaxY + vec.y);
-    for (int i = 0; i < 4; i++) {
-       
-        switch (getType(point[i])) {
- 
-        case 21:
-            return true;
-        case 3:
-            return true;
-        case 108:
-            return true;
-        case 12:
-            return true;
-        case 212:
-            return true;
-        case 312:
-            return true;
-        case 112:
-            return true;
-        case 412:
-            return true;
-       
-        default:
-            continue;
-        }
-    }
-    return false;
-}
-bool Level3_1::willContactBullet(Bullet* bullet)
-{
-    // 获取子弹位置信息与尺寸
-    Rect rect = bullet->getBoundingBox();
-
-
-    float MinY = rect.getMinY();
-    float MaxY = rect.getMaxY();
-    float MinX = rect.getMinX();
-    float MaxX = rect.getMaxX();
-
-    Vec2 point[4];
-    point[0] = Vec2(MinX, MinY);
-    point[1] = Vec2(MinX, MaxY);
-    point[2] = Vec2(MaxX, MinY);
-    point[3] = Vec2(MaxX, MaxY);
-    for (int i = 0; i < 4; i++) {
-         if (bullet->gettype() == 2) {
-             switch (getType(point[i])) {
-             case 21:
-            
-                 return true;
-
-             case 29:
-                 return true;
-             case 108:
-                 return true;
-             case 39:
-                 return true;
-             case 14:
-                 return true;
-             case 114:
-                 return true;
-             case 214:
-                 return true;
-             case 314:
-                 return true;
-             defalut:
-                 continue;
-             }
-        }
-        else if (bullet->gettype() == 1) {
-            switch (getType(point[i])) {
-            case 15:
-                return true;
-            case 21:
-                return true;
-            case 12:
-                return true;
-            case 6:
-                return true;
-            case 3:
-                return true;
-            case 10:
-                return true;
-            case 2:
-                return true;
-            case 4:
-                return true;
-            case 9:
-                return true;
-            case 19:
-                return true;
-            case 29:
-                return true;
-            case 39:
-                return true;
-            case 31:
-                return true;
-            case 32:
-                return true;
-            case 33:
-                return true;
-            case 34:
-                return true;
-            case 35:
-                return true;
-            case 36:
-                return true;
-            case 37:
-                return true;
-            case 38:
-                return true;
-            case 11:
-                return true;
-            case 312:
-                return true;
-            case 212:
-                return true;
-            case 112:
-                return true;
-            case 412:
-                return true;
-            case 114:
-                return true;
-            case 214:
-                return true;
-            case 314:
-                return true;
-            case 14:
-                return true;
-            case 108:
-                return true;
-            default:
-                continue;
-            }
-      }
-       
-    }
-        
-    
-    return false;
 }
 void Level3_1::destroyMap(Bullet* bullet)
 {
@@ -583,8 +298,7 @@ void Level3_1::destroyMap(Bullet* bullet)
     //将坦克Y坐标转换为地图上的Y坐标
     float MinY = rect.getMinY();
     float MaxY = rect.getMaxY();
-    Sprite* sprite;
-    Vec2 Position;
+
     // 计算坦克的四顶点坐标
     float MinX = rect.getMinX();
     float MaxX = rect.getMaxX();
@@ -603,118 +317,112 @@ void Level3_1::destroyMap(Bullet* bullet)
         int iy = (int)y;
         switch (map[iy][ix]) {
             // 此处根据方块类型执行方块摧毁的操作
-        case 19:
-            if (physicsbody[13][1]) {
-                physicsbody[13][1]->removeFromParentAndCleanup(true);
-                physicsbody[13][1] = nullptr;
-                map[13][1] = 0;       
-            }
-            break;
-        case 9:
-            if (physicsbody[5][3]) {
-                Position = physicsbody[5][3]->getPosition();
-                physicsbody[5][3]->removeFromParentAndCleanup(true);
-                sprite = Sprite::create("12.png");
-                sprite->setOpacity(100);
-                sprite->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-                sprite->setScale(scale);
-                sprite->setPosition(Position);
-                physicsbody[5][3] = sprite;
-                this->addChild(sprite);
-                map[5][3] = 412;
-            }
-            Position = physicsbody[iy][ix]->getPosition();
-            physicsbody[iy][ix]->removeFromParentAndCleanup(true);
-            sprite = Sprite::create("8.png");
-            sprite->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-            sprite->setScale(scale);
-            sprite->setPosition(Position);
-            physicsbody[iy][ix] = sprite;
-            this->addChild(sprite);
-            map[iy][ix] = 8;          
-            break;   
-        case 29:
-            if (physicsbody[2][10]) {
-                physicsbody[2][10]->removeFromParentAndCleanup(true);
-                physicsbody[2][10] = nullptr;
-                map[2][10] = 0;
-            }  
-            break;
-        case 39:
-            Fire(Vec2(physicsbody[1][18]->getBoundingBox().origin.x + 16, physicsbody[1][18]->getBoundingBox().origin.y), -90.0f, 300.0,2);
-            return;
-        case 108:
-            if(bullet->gettype() == 2)
-            {
-                physicsbody[iy][ix]->removeFromParentAndCleanup(true);
-                map[iy][ix] = 0;
-            }
-            break;
-        case 12:
-            physicsbody[iy][ix]->removeFromParentAndCleanup(true);
+        case 11:
+            physicsbody[iy][ix]->setVisible(false);
             map[iy][ix] = 0;
             break;
-        case 112:
-            Position = physicsbody[iy][ix]->getPosition();
-            physicsbody[iy][ix]->removeFromParentAndCleanup(true);
-            sprite = Sprite::create("8.png");
-            sprite->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-            sprite->setScale(scale);
-            sprite->setPosition(Position);
-            physicsbody[iy][ix] = sprite;
-            this->addChild(sprite);
-            map[iy][ix] = 8;
-            break;
-        case 212:
-            Position = physicsbody[iy][ix]->getPosition();
-            physicsbody[iy][ix]->removeFromParentAndCleanup(true);
-            sprite = Sprite::create("2.png");
-            sprite->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-            sprite->setScale(scale);
-            sprite->setPosition(Position);
-            physicsbody[iy][ix] = sprite;
-            this->addChild(sprite);
-            map[iy][ix] = 2;
-            break;
-        case 312:
-            Position = physicsbody[iy][ix]->getPosition();
-            physicsbody[iy][ix]->removeFromParentAndCleanup(true);
-            sprite = Sprite::create("4.png");
-            sprite->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-            sprite->setScale(scale);
-            sprite->setPosition(Position);
-            physicsbody[iy][ix] = sprite;
-            this->addChild(sprite);
-            map[iy][ix] = 35;
-            break;
-        case 412:
-            Position = physicsbody[iy][ix]->getPosition();
-            physicsbody[iy][ix]->removeFromParentAndCleanup(true);
-            sprite = Sprite::create("4.png");
-            sprite->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-            sprite->setScale(scale);
-            sprite->setPosition(Position);
-            physicsbody[iy][ix] = sprite;
-            this->addChild(sprite);
-            map[iy][ix] = 36;
-            break;
-        case 14:
-            Fire(Vec2(physicsbody[3][8]->getBoundingBox().origin.x , physicsbody[3][8]->getBoundingBox().origin.y + 16), 180.0f, 500.0, 2);
-            return;
-        case 114:
-            Fire(Vec2(physicsbody[4][8]->getBoundingBox().origin.x, physicsbody[4][8]->getBoundingBox().origin.y + 16), 180.0f, 500.0, 2);
-            return;
-        case 214:
-            Fire(Vec2(physicsbody[5][8]->getBoundingBox().origin.x , physicsbody[5][8]->getBoundingBox().origin.y + 16), 180.0f, 500.0, 2);
-            return;
-        case 314:
-            Fire(Vec2(physicsbody[1][8]->getBoundingBox().origin.x, physicsbody[1][8]->getBoundingBox().origin.y + 16), 180.0f, 500.0, 2);
-            return;
+        case 4:
+
+
         default:
             continue;
         }
     }
 }
+
+bool Level3_1::willContact(Vec2 vec, Sprite* sprite)
+{
+    // 获取坦克/子弹位置信息与尺寸
+    Rect rect = sprite->getBoundingBox();
+
+    //将坦克Y坐标转换为地图上的Y坐标
+    float MinY = rect.getMinY();
+    float MaxY = rect.getMaxY();
+
+    // 计算坦克的四顶点坐标
+    float MinX = rect.getMinX();
+    float MaxX = rect.getMaxX();
+
+    Vec2 point[4];
+    point[0] = Vec2(MinX + vec.x, MinY + vec.y);
+    point[1] = Vec2(MinX + vec.x, MaxY + vec.y);
+    point[2] = Vec2(MaxX + vec.x, MinY + vec.y);
+    point[3] = Vec2(MaxX + vec.x, MaxY + vec.y);
+    for (int i = 0; i < 4; i++) {
+        switch (getType(point[i])) {
+        case 1:
+            return true;
+
+        case 3:
+            return true;
+        case 4:
+            return true;
+        case 11:
+            return true;
+
+        default:
+            continue;
+        }
+    }
+    return false;
+}
+bool Level3_1::willContactTrap(Vec2 vec)
+{
+    // 获取坦克位置信息与尺寸
+    Rect rect = tank->getBoundingBox();
+
+    //将坦克Y坐标转换为地图上的Y坐标
+    float MinY = rect.getMinY();
+    float MaxY = rect.getMaxY();
+
+    // 计算坦克的四顶点坐标
+    float MinX = rect.getMinX();
+    float MaxX = rect.getMaxX();
+
+    Vec2 point[4];
+    point[0] = Vec2(MinX + vec.x, MinY + vec.y);
+    point[1] = Vec2(MinX + vec.x, MaxY + vec.y);
+    point[2] = Vec2(MaxX + vec.x, MinY + vec.y);
+    point[3] = Vec2(MaxX + vec.x, MaxY + vec.y);
+    for (int i = 0; i < 4; i++) {
+        switch (getType(point[i])) {
+        case 2:
+            tank->deletetank();
+            tank->setPosition(Vec2(2 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 4) * tileSize * scale + offsetY + tankHeight / 2));
+            return true;
+        default:
+            continue;
+        }
+    }
+    return false;
+}
+
+void Level3_1::willContactBullet()
+{
+    for (int i = 0; i < m_bullet.size(); i++) {
+        if (willContact(Vec2::ZERO, m_bullet[i])) {
+            Vec2 pos = m_bullet[i]->getPosition();
+            destroyMap(m_bullet[i]);
+            m_bullet[i]->deletebullet();
+            m_bullet.erase(m_bullet.begin() + i);
+        }
+        else {
+            for (int j = i + 1; j < m_bullet.size(); j++) {
+                if (m_bullet[i]->getBoundingBox().intersectsRect(m_bullet[j]->getBoundingBox())) {
+                    m_bullet[i]->deletebullet();
+                    m_bullet[j]->deletebullet();
+                    m_bullet.erase(m_bullet.begin() + i);
+                    if (i < j) {
+                        j--;
+                    }
+                    m_bullet.erase(m_bullet.begin() + j);
+                    break;
+                }
+            }
+        }
+    }
+}
+
 void Level3_1::willContactOther(Vec2 vec)
 {
     // 获取坦克位置信息与尺寸
@@ -734,136 +442,103 @@ void Level3_1::willContactOther(Vec2 vec)
     point[2] = Vec2(MaxX + vec.x, MinY + vec.y);
     point[3] = Vec2(MaxX + vec.x, MaxY + vec.y);
     for (int i = 0; i < 4; i++) {
-        
         switch (getType(point[i]))
         {
-        case 7:
-            if (physicsbody[8][4]) {
-                physicsbody[8][4]->removeFromParentAndCleanup(true);
-                physicsbody[8][4] = nullptr;
-                map[8][4] = 0;       
-            } 
-            if (physicsbody[4][1]) {
-                physicsbody[4][1]->removeFromParentAndCleanup(true);
-                physicsbody[4][1] = nullptr;
-                map[4][1] = 0;
-            }
-            physicsbody[3][3]->setVisible(false);
-            break;
-        case 27:
-            physicsbody[16][17]->setTexture(Director::getInstance()->getTextureCache()->addImage("106.png"));
-            if (physicsbody[8][17]->isVisible()==false)               
-                map[16][17] = 888;
-            physicsbody[11][10]->setVisible(false);
-            break;
-        case 109:
-            again();
-            break;
-        case 47:
-            if(physicsbody[1][10]!=nullptr)
-            {
-                physicsbody[1][10]->setTexture(Director::getInstance()->getTextureCache()->addImage("4.png"));
-            }
-            map[1][10] = 38;
-            physicsbody[1][11]->setVisible(false);
-            break;
-        case 57:
-            for(int i=3;i<=5;i++)
-            {
-                physicsbody[i][5]->setVisible(true);
-                physicsbody[i][8]->setVisible(true);
-            }
-            physicsbody[6][5]->setVisible(true);
-            physicsbody[1][8]->setVisible(true);
-            physicsbody[1][5]->setVisible(true);
-            physicsbody[4][18]->setVisible(false);
-            break;
-        case 67:
-            map[13][16] = 107; map[13][19] = 107; map[13][22] = 107; map[14][17] = 107; map[13][16] = 107;
-            map[15][16] = 107; map[15][19] = 107; map[15][22] = 107; map[16][20] = 107; map[16][17] = 107;
-            physicsbody[13][16]->setTexture(Director::getInstance()->getTextureCache()->addImage("107.png"));
-            physicsbody[13][19]->setTexture(Director::getInstance()->getTextureCache()->addImage("107.png"));
-            physicsbody[13][22]->setTexture(Director::getInstance()->getTextureCache()->addImage("107.png"));
-            physicsbody[14][17]->setTexture(Director::getInstance()->getTextureCache()->addImage("107.png"));
-            physicsbody[13][16]->setTexture(Director::getInstance()->getTextureCache()->addImage("107.png"));
-            physicsbody[15][16]->setTexture(Director::getInstance()->getTextureCache()->addImage("107.png"));
-            physicsbody[15][19]->setTexture(Director::getInstance()->getTextureCache()->addImage("107.png"));
-            physicsbody[15][22]->setTexture(Director::getInstance()->getTextureCache()->addImage("107.png"));
-            physicsbody[16][17]->setTexture(Director::getInstance()->getTextureCache()->addImage("107.png"));
-            physicsbody[16][20]->setTexture(Director::getInstance()->getTextureCache()->addImage("107.png"));
-            physicsbody[8][17]->setVisible(false);
-            if(physicsbody[4][18]->isVisible()==false)
-                
-                map[16][17] = 888;
-            break;
-        case 13:
-            if (tank->God_mode <= 0)
-            {
-                again();
-            }
-            break;
-        case 2:
-            again();
-            break;
-        case 11:
-            if (tank->God_mode <= 0)
-            {
-                again();
-            }
-            return;
-        case 31:
-            tank->setPosition(Vec2(11 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 8) * tileSize * scale + offsetY + tankHeight / 2));
-            return;
-        case 32:
-            tank->setPosition(Vec2(10 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 4) * tileSize * scale + offsetY + tankHeight / 2));
-            return;
-        case 33:
-            tank->setPosition(Vec2(23 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 1) * tileSize * scale + offsetY + tankHeight / 2));
-            return;
-        case 34:
-        {
-             chaser = Tank::create("chaser.png");
-            if (chaser!=nullptr)
-            {
-                chaser->setScale(scale * 32 / 700);
-                this->addChild(chaser, 0);
-                chaser->setPosition(Vec2(17 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 6) * tileSize * scale + offsetY + tankHeight / 2));
-                
-            }
-            tank->setPosition(Vec2(23 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 6) * tileSize * scale + offsetY + tankHeight / 2));
-        }
-            return;
-        case 35:
-            tank->setPosition(Vec2(2 * tileSize * scale + offsetX + tankWidth / 2+5, (mapy - 1 - 7) * tileSize * scale + offsetY + tankHeight / 2+5));
-            return;
-        case 36:
-            tank->setPosition(Vec2(1 * tileSize * scale + offsetX + tankWidth / 2 + 5, (mapy - 1 - 2) * tileSize * scale + offsetY + tankHeight / 2 + 5));
-            return;
-        case 37:
-            tank->setPosition(Vec2(7 * tileSize * scale + offsetX + tankWidth / 2 + 5, (mapy - 1 - 4) * tileSize * scale + offsetY + tankHeight / 2 + 5));
-            return;
-        case 38:
-            tank->setPosition(Vec2(18 * tileSize * scale + offsetX + tankWidth / 2 + 5, (mapy - 1 - 14) * tileSize * scale + offsetY + tankHeight / 2 + 5));
-            return;
-        case 5:
-            for (int i = 1; i <= 3; i++) {
-                Fire(Vec2(physicsbody[1][i]->getBoundingBox().origin.x + 16, physicsbody[1][i]->getBoundingBox().origin.y), -90.0f, 1024.0,2);
-            }
-            return;
-        case 25:
-            for (int i = 4; i <= 5; i++) {
-                Fire(Vec2(physicsbody[i][16]->getBoundingBox().origin.x + 16, physicsbody[i][16]->getBoundingBox().origin.y),180.0f, 1024.0,2);
-            }
-            return;        
-        case 8:
-            tank->setGod_mode(210);           
-            return;
         case 6:
-            tank->setPosition(tank->getPosition() + Vec2(32, 0));
+            physicsbody[iy + 1][ix]->setVisible(false);
+            map[iy + 1][ix] = 30;
+            target++;
             return;
-        case 888:
-            event_win();
-            break;
+        case 7:
+            if (target == 13)
+            {
+                AudioEngine::stopAll();
+                auto hello = Level4_1::createScene();
+                TransitionFade* trs = TransitionFade::create(1.0f, hello);
+                Director::getInstance()->replaceScene(trs);
+            }
+            return;
+        case 8:
+            if (times == 1)
+            {
+                tank->deletetank();
+                tank->setPosition(Vec2(1 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 1) * tileSize * scale + offsetY + tankHeight / 2));
+            }
+            else
+            {
+                tank->setPosition(Vec2(17 * tileSize * scale + offsetX + tankWidth * 0.9, (mapy - 36) * tileSize * scale + offsetY + tankHeight / 2));
+            }
+            return;
+        case 9:
+            physicsbody[iy + 1][ix]->setVisible(false);
+            map[iy + 1][ix] = 30;
+            physicsbody[9][9]->setVisible(true);
+            target++;
+            return;
+        case 10:
+            physicsbody[iy + 1][ix]->setVisible(true);
+            tank->deletetank();
+            tank->setPosition(Vec2(1 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 1) * tileSize * scale + offsetY + tankHeight / 2));
+            for (int y = 0; y < mapy; ++y)
+            {
+                for (int x = 0; x < mapx; ++x)
+                {
+                    if (map[y][x] == 30)
+                    {
+                        physicsbody[y][x]->setVisible(true);
+                        map[y][x] = 6;
+                        target--;
+                    }
+                }
+            }
+            return;
+        case 12:
+            tank->setPosition(Vec2(portalPositions[13].x, portalPositions[13].y + tileSize * scale / 2 + tankHeight * 0.7));
+            return;
+        case 13:
+            tank->setPosition(Vec2(portalPositions[12].x - tankWidth * 0.7 - tileSize * scale / 2, portalPositions[12].y));
+            return;
+        case 14:
+            tank->deletetank();
+            tank->setPosition(Vec2(1 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 1) * tileSize * scale + offsetY + tankHeight / 2));
+            for (int y = 0; y < mapy; ++y)
+            {
+                for (int x = 0; x < mapx; ++x)
+                {
+                    if (map[y][x] == 30)
+                    {
+                        physicsbody[y][x]->setVisible(true);
+                        map[y][x] = 6;
+                        target--;
+                    }
+                }
+            }
+            return;
+        case 15:
+            if (frequency == 0)
+            {
+                tank->setPosition(Vec2(31 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 27) * tileSize * scale + offsetY + tankHeight / 2));
+                frequency++;
+                times++;
+                physicsbody[25][25]->setVisible(true);
+            }
+            else
+            {
+                tank->setPosition(Vec2(portalPositions[16].x + tankWidth * 0.7 + tileSize * scale / 2, portalPositions[16].y + tankHeight * 0.2));
+                frequency--;
+                times++;
+                physicsbody[25][25]->setVisible(false);
+            }
+            return;
+        case 16:
+            tank->setPosition(Vec2(portalPositions[15].x - tankWidth * 0.7 - tileSize * scale / 2, portalPositions[15].y - tankHeight * 0.2));
+            return;
+        case 17:
+            tank->setPosition(Vec2(35 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 33) * tileSize * scale + offsetY + tankHeight / 2));
+            return;
+        case 18:
+            tank->setPosition(Vec2(1 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 1) * tileSize * scale + offsetY + tankHeight / 2));
+            return;
         default:
             continue;
         }
@@ -890,10 +565,10 @@ void Level3_1::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Ev
         tank->setRotation(0.0f);
         break;
     case cocos2d::EventKeyboard::KeyCode::KEY_J:
-        //ks = KEY_J_PRESSED;
-        this->Fire(calculation(tank), -tank->getRotation() + 90.0f, 1000,1);
+        this->Fire(calculation(tank), -tank->getRotation() + 90.0f, 1000);
         break;
     case cocos2d::EventKeyboard::KeyCode::KEY_P:
+        ks = KEY_P_PRESSED;
         Pausemenu();
         break;
     defalut:
@@ -920,14 +595,12 @@ void Level3_1::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::E
         tank->setRotation(0.0f);
         ks = KEY_W_PRESSED;
     }
-    
 }
-
-void Level3_1::update(float delta) {
-
-    //player
+void Level3_1::update(float delta)
+{
     this->delta = delta;
     bool staticflag = false;
+    bool staticflag2 = false;
     if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_A] == false &&
         Keystate[cocos2d::EventKeyboard::KeyCode::KEY_S] == false &&
         Keystate[cocos2d::EventKeyboard::KeyCode::KEY_D] == false &&
@@ -935,28 +608,30 @@ void Level3_1::update(float delta) {
     {
         tank->stopmoving();
     }
-    else {
-        switch (ks) {
+    else
+    {
+        switch (ks)
+        {
         case KEY_A_PRESSED:
-            staticflag = willContact(Vec2(-2.5f, 0));
-
+            staticflag = willContact(Vec2(-2.5f, 0), tank);
+            staticflag2 = willContactTrap(Vec2(0, 0));
             tank->moveleft();
             break;
         case KEY_S_PRESSED:
-            staticflag = willContact(Vec2(0, -2.5f));
-
+            staticflag = willContact(Vec2(0, -2.5f), tank);
+            staticflag2 = willContactTrap(Vec2(0, 0));
             tank->movedown();
             break;
         case KEY_D_PRESSED:
 
-            staticflag = willContact(Vec2(2.5f, 0));
-
+            staticflag = willContact(Vec2(2.5f, 0), tank);
+            staticflag2 = willContactTrap(Vec2(0, 0));
             tank->moveright();
             break;
         case KEY_W_PRESSED:
 
-            staticflag = willContact(Vec2(0, 2.5f));
-
+            staticflag = willContact(Vec2(0, 2.5f), tank);
+            staticflag2 = willContactTrap(Vec2(0, 0));
             tank->moveup();
             break;
         case KEY_P_PRESSED:
@@ -964,24 +639,16 @@ void Level3_1::update(float delta) {
             break;
         }
     }
-    ContactBullet();
-    tank->update(delta, staticflag);
+    willContactBullet();
     willContactOther(Vec2(0, 0));
-    Rect rect = tank->getBoundingBox();
+    tank->update(delta, staticflag);
+    tank->stopmoving();
+    tank->update(delta, staticflag2);
 
-    //将坦克Y坐标转换为地图上的Y坐标
-    float MinY = rect.getMinY();
-    float MaxY = rect.getMaxY();
-    Vec2 Position;
-    // 计算坦克的四顶点坐标
-    float MinX = rect.getMinX();
-    float MaxX = rect.getMaxX();
-
-  
-    if (chaser!=nullptr && MinY >= physicsbody[10][0]->getPositionY() && MaxY <= physicsbody[5][0]->getPositionY() &&
-        MinX>=physicsbody[0][17]->getPositionX()&&MaxX<=physicsbody[0][24]->getPositionX())
+    //chaser
+    if (target == 13)
     {
-        
+        chaser->setVisible(true);
         float playx = tank->getPositionX();
         float playy = tank->getPositionY();
         float chaserx = chaser->getPositionX();
@@ -993,26 +660,46 @@ void Level3_1::update(float delta) {
         if (fabs(chaserx - playx) <= tank->getContentSize().width / 2 &&
             fabs(chasery - playy) <= tank->getContentSize().height / 2)
         {
-            again();
+            tank->deletetank();
+            tank->setPosition(Vec2(1 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 1) * tileSize * scale + offsetY + tankHeight / 2));
+            chaser->setPosition(Vec2(1 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 17) * tileSize * scale + offsetY + tankHeight / 2));
+            chaser->setVisible(false);
+            for (int y = 0; y < mapy; ++y)
+            {
+                for (int x = 0; x < mapx; ++x)
+                {
+                    if (map[y][x] == 30)
+                    {
+                        physicsbody[y][x]->setVisible(true);
+                        map[y][x] = 6;
+                        target--;
+                    }
+                }
+            }
         }
-        
     }
-    else if (chaser!=nullptr&&(MinY < physicsbody[10][0]->getPositionY() || MaxY > physicsbody[5][0]->getPositionY() ||
-        MinX < physicsbody[0][17]->getPositionX() || MaxX > physicsbody[0][24]->getPositionX()))
-    {
-        chaser->removeFromParent();  // 假设这是销毁对象的正确方法
-        chaser = nullptr;
-    }
-    
 }
+
+
 bool Level3_1::init()
 {
-
     if (!Scene::init())
     {
         return false;
     }
-    auto background1 = cocos2d::AudioEngine::play2d("run.mp3", true, 1.0f);
+    std::ifstream file1;
+    file1.open("level.txt");
+    std::string ss;
+    std::ofstream file2;
+    getline(file1, ss);
+    file1.close();
+    file2.open("level.txt");
+    if (stoi(ss) < 3)
+        file2 << "3";
+    else
+        file2 << ss;
+    file2.close();
+    auto background1 = cocos2d::AudioEngine::play2d("8bit_Level3.mp3", true, 1.0f);
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     //地图砖块的大小
@@ -1030,117 +717,128 @@ bool Level3_1::init()
     offsetX = (winSize.width - mapWidth * scale) / 2;
     offsetY = (winSize.height - mapHeight * scale) / 2;
     //渲染地图
-
-    auto sprite = Sprite::create("background.png");
-    sprite->setScale(visibleSize.width / sprite->getContentSize().width, visibleSize.height / sprite->getContentSize().height);
-    if (sprite == nullptr)
-    {
-        problemLoading("'background.png'");
-    }
-    else
-    {
-        // position the sprite on the center of the screen
-        sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
-
-        // add the sprite as a child to this layer
-        this->addChild(sprite);
-    }
-   
     for (int y = 0; y < mapy; ++y)
     {
         for (int x = 0; x < mapx; ++x)
         {
             physicsbody[y][x] = NULL;
-            if (map[y][x] == 1) {
-               
-            }
-            else if (map[y][x] == 2) {
-                physicsbody[y][x] = Sprite::create("2.png");
-            }
-            else if (map[y][x] == 3) {
-                physicsbody[y][x] = Sprite::create("3.png");
-            }
-            else if (map[y][x] == 4) {
-                physicsbody[y][x] = Sprite::create("4.png");
-            }
-            else if (map[y][x] == 5||map[y][x]==25) {
-                physicsbody[y][x] = Sprite::create("5.png");
-            }
-            else if (map[y][x] == 6) {
-                physicsbody[y][x] = Sprite::create("6.png");
-            }
-            else if (map[y][x] == 7||map[y][x]==17 || map[y][x] == 27 || map[y][x] == 47 || map[y][x] == 57 || map[y][x] == 67) {
-                physicsbody[y][x] = Sprite::create("7.png");
-            }
-            else if (map[y][x] == 8) {
-                physicsbody[y][x] = Sprite::create("8.png");
-            }
-            else if (map[y][x] == 9||map[y][x]==19||map[y][x] == 39) {
-                physicsbody[y][x] = Sprite::create("9.png");
-            }
-            else if (map[y][x] == 29) {
-                Sprite* s = Sprite::create("9.png");
-                s->setVisible(false);
-                physicsbody[y][x] = s;
-            }
-            else if (map[y][x] == 10) {
-                physicsbody[y][x] = Sprite::create("10.png");
-            }
-            else if (map[y][x] == 11) {
-                physicsbody[y][x] = Sprite::create("11.png");
-            }
-            else if (map[y][x] == 12|| map[y][x] == 112 || map[y][x] == 212 || map[y][x] == 312 || map[y][x] == 412) {
-                Sprite* s = Sprite::create("12.png");
-                s->setOpacity(100);
-                physicsbody[y][x] = s;
-            }
-            else if (map[y][x] == 13) {
+            switch (map[y][x])
+            {
+            case 1:
+                physicsbody[y][x] = Sprite::create("space.png");
+                break;
+            case 2:
+                physicsbody[y][x] = Sprite::create("steel.png");
+                break;
+            case 3:
                 physicsbody[y][x] = Sprite::create("water.png");
+                break;
+            case 4:
+                physicsbody[y][x] = Sprite::create("grass.png");
+                break;
+            case 5:
+                physicsbody[y][x] = Sprite::create("road_earth.png");
+                break;
+            case 6:
+                physicsbody[y][x] = Sprite::create("gold.png");
+                break;
+            case 7:
+                physicsbody[y][x] = Sprite::create("passflag.png");
+                break;
+            case 8:
+                physicsbody[y][x] = Sprite::create("thorn.png");
+                break;
+            case 9:
+                physicsbody[y][x] = Sprite::create("gold.png");
+                break;
+            case 10:
+                physicsbody[y][x] = Sprite::create("fireearth.png");
+                break;
+            case 11:
+                physicsbody[y][x] = Sprite::create("fakespace.png");
+                break;
+            case 12:
+                physicsbody[y][x] = Sprite::create("portal.png");
+                break;
+            case 13:
+                physicsbody[y][x] = Sprite::create("portal.png");
+                break;
+            case 14:
+                physicsbody[y][x] = Sprite::create("portal.png");
+                break;
+            case 15:
+                physicsbody[y][x] = Sprite::create("portal_red.png");
+                break;
+            case 16:
+                physicsbody[y][x] = Sprite::create("portal.png");
+                break;
+            case 17:
+                physicsbody[y][x] = Sprite::create("portal.png");
+                break;
+            case 18:
+                physicsbody[y][x] = Sprite::create("thorn.png");
+                break;
+            case 19:
+                physicsbody[y][x] = Sprite::create("thorn.png");
+                break;
+            default:
+                break;
             }
-            else if (map[y][x] == 15) {
-                Sprite* s = Sprite::create("14.png");
-                s->setVisible(false);
-                physicsbody[y][x] = s;
-            }
-            else if (map[y][x] == 14|| map[y][x] == 114|| map[y][x] == 214||map[y][x] == 314) {
-                Sprite* s = Sprite::create("15.png");
-                s->setVisible(false);
-                physicsbody[y][x] = s;
-            }
-            else if (map[y][x] == 13) {
-                physicsbody[y][x] = Sprite::create("13.png");
-            }
-            else if (map[y][x] == 106) {
-                physicsbody[y][x] = Sprite::create("106.png");
-            }
-            else if (map[y][x] == 107) {
-                physicsbody[y][x] = Sprite::create("107.png");
-            }
-            else if (map[y][x] == 108) {
-                physicsbody[y][x] = Sprite::create("21.png");
-            }
-            else if (map[y][x] == 109 ) {
-                physicsbody[y][x] = Sprite::create("109.png");
-            }
-            else if (map[y][x] == 31||map[y][x]==32 || map[y][x] == 33 || map[y][x] == 34 || map[y][x] == 35 || map[y][x] == 36 || map[y][x] == 37 || map[y][x] == 38) {
-                physicsbody[y][x] = Sprite::create("4.png");
-            }
-            
-            else if (map[y][x] == 21) {
-                physicsbody[y][x] = Sprite::create("108.png");
-            }
-          
-
             if (physicsbody[y][x])
             {
-               if (map[y][x] == 1)
+                if (map[y][x] == 6 || map[y][x] == 7 || map[y][x] == 8 || map[y][x] == 10)
                 {
-                    auto sprite = Sprite::create("1.png");
-                    sprite->setOpacity(10);
+                    auto sprite = Sprite::create("road_earth.png");
                     sprite->setScale(scale);
                     sprite->setPosition(Vec2(x * tileSize * scale + offsetX, (mapy - 1 - y) * tileSize * scale + offsetY));
                     sprite->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
                     this->addChild(sprite);
+                    if (map[y][x] == 10)
+                    {
+                        physicsbody[y][x]->setVisible(false);
+                    }
+                }
+                else if (map[y][x] == 12)
+                {
+                    auto portal = Sprite::create("portal.png");
+                    portal->setScale(scale);
+                    portal->setPosition(Vec2(x * tileSize * scale + offsetX, (mapy - 1 - y) * tileSize * scale + offsetY));
+                    portal->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+                    this->addChild(portal);
+                    portalPositions[12] = Vec2(portal->getBoundingBox().getMidX(), portal->getBoundingBox().getMidY());
+                }
+                else if (map[y][x] == 13)
+                {
+                    auto portal = Sprite::create("portal.png");
+                    portal->setScale(scale);
+                    portal->setPosition(Vec2(x * tileSize * scale + offsetX, (mapy - 1 - y) * tileSize * scale + offsetY));
+                    portal->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+                    this->addChild(portal);
+                    portalPositions[13] = Vec2(portal->getBoundingBox().getMidX(), portal->getBoundingBox().getMidY());
+                }
+                else if (map[y][x] == 15)
+                {
+                    auto portal = Sprite::create("portal.png");
+                    portal->setScale(scale);
+                    portal->setPosition(Vec2(x * tileSize * scale + offsetX, (mapy - 1 - y) * tileSize * scale + offsetY));
+                    portal->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+                    this->addChild(portal);
+                    physicsbody[y][x]->setVisible(false);
+                    portalPositions[15] = Vec2(portal->getBoundingBox().getMidX(), portal->getBoundingBox().getMidY());
+                }
+                else if (map[y][x] == 16)
+                {
+                    auto portal = Sprite::create("portal.png");
+                    portal->setScale(scale);
+                    portal->setPosition(Vec2(x * tileSize * scale + offsetX, (mapy - 1 - y) * tileSize * scale + offsetY));
+                    portal->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+                    this->addChild(portal);
+                    portalPositions[16] = Vec2(portal->getBoundingBox().getMidX(), portal->getBoundingBox().getMidY());
+                }
+                else if (map[y][x] == 17)
+                {
+                    physicsbody[y][x]->setVisible(false);
+                    portalPositions[17] = Vec2(physicsbody[y][x]->getBoundingBox().getMidX(), physicsbody[y][x]->getBoundingBox().getMidY());
                 }
                 physicsbody[y][x]->setScale(scale);
                 physicsbody[y][x]->setPosition(Vec2(x * tileSize * scale + offsetX, (mapy - 1 - y) * tileSize * scale + offsetY));
@@ -1151,31 +849,35 @@ bool Level3_1::init()
     }
 
     //add tank below
-    tank = Tank::create("OriginalTank.png");
+    tank = Tank::create("tank.png");
+    tank->setName("tank");
     if (tank != nullptr)
     {
         //position the sprite on the center of the screen
 
-        tank->setScale(scale * 32 / 40);
+        tank->setScale(scale * 32 / 50);
         //add the sprite as a child to this layer
         this->addChild(tank, 0);
         Rect rect = tank->getBoundingBox();
         tankWidth = rect.size.width;
         tankHeight = rect.size.height;
-        tank->setPosition(Vec2(1 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 18) * tileSize * scale + offsetY + tankHeight / 2));
+        tank->setPosition(Vec2(1 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 1) * tileSize * scale + offsetY + tankHeight / 2));
     }
 
-        //chaser = Tank::create("chaser.png");
-        //if (chaser != nullptr)
-        //{
-        //    //position the sprite on the center of the screen
-        //    chaser->setScale(scale * 32 / 700);
-        //    //add the sprite as a child to this layer
-        //    this->addChild(chaser, 0);
-        //    chaser->setPosition(Vec2(17 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 6) * tileSize * scale + offsetY + tankHeight / 2));
-        //}
-    
     //add chase below
+    if (chaser == nullptr)
+    {
+        chaser = Tank::create("chaser.png");
+        //position the sprite on the center of the screen
+        chaser->setScale(scale * 32 / 400);
+        //add the sprite as a child to this layer
+        chaser->setVisible(false);
+        this->addChild(chaser, 0);
+        chaser->setPosition(Vec2(1 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 17) * tileSize * scale + offsetY + tankHeight / 2));
+    }
+
+
+
     //add keyboard listenser below
     listener->onKeyPressed = CC_CALLBACK_2(Level3_1::onKeyPressed, this);
     listener->onKeyReleased = CC_CALLBACK_2(Level3_1::onKeyReleased, this);

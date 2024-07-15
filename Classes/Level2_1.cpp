@@ -236,7 +236,7 @@ bool Level2_1::willContact(Vec2 vec)
     }
     return false;
 }
-bool Level2_1::willContactTrap(Vec2 vec)
+void Level2_1::willContactTrap(Vec2 vec)
 {
     // 获取坦克位置信息与尺寸
     Rect rect = tank->getBoundingBox();
@@ -271,20 +271,20 @@ bool Level2_1::willContactTrap(Vec2 vec)
             if (!physicsbody[12][2]->isVisible()) {
                 dategold();
             }
-            return true;
+            return ;
         case 2:
             again();
             if (!physicsbody[12][2]->isVisible()) {
                 dategold();
             }
-            return true;
+            return ;
         case 3:
             again();
             if (!physicsbody[12][2]->isVisible()) {
                 dategold();
             }
             physicsbody[iy + 1][ix]->setVisible(true);
-            return true;
+            return ;
         case 7:
             physicsbody[iy + 1][ix]->setVisible(false);
             map[iy + 1][ix] = 30;
@@ -292,7 +292,7 @@ bool Level2_1::willContactTrap(Vec2 vec)
             if (target == 4) {
                 physicsbody[1][13]->setVisible(true);
             }
-            return true;
+            return ;
         case 8:
             if (physicsbody[1][13]->isVisible())
             {
@@ -300,35 +300,35 @@ bool Level2_1::willContactTrap(Vec2 vec)
                 physicsbody[12][2]->setVisible(true);
                 physicsbody[1][13]->setVisible(false);
             }
-            return true;
+            return ;
         case 4:
             ison = true;
-            return true;
+            return ;
         case 11:if (physicsbody[12][2]->isVisible()) {
             AudioEngine::stopAll();
-            auto hello = Level4_1::createScene();
+            auto hello = Level3_1::createScene();
             TransitionFade* trs = TransitionFade::create(1.0, hello);
             Director::getInstance()->replaceScene(trs);
         }
-            return true;
+            return ;
         case 12:
             if (!physicsbody[12][2]->isVisible()) {
                 again();
                 dategold();
                 physicsbody[iy + 1][ix]->setVisible(true);
             }
-            return true;
+            return ;
         case 13:
             if (physicsbody[12][2]->isVisible()) {
                 again();
                 physicsbody[iy + 1][ix]->setVisible(true);
             }
-            return true;
+            return ;
         default:
             continue;
         }
     }
-    return false;
+    return ;
 }
 void Level2_1::ContactBullet()
 {
@@ -516,24 +516,24 @@ void Level2_1::update(float delta) {
         switch (ks) {
         case KEY_A_PRESSED:
             staticflag = willContact(Vec2(-2.5f, 0));
-            staticflag2 = willContactTrap(Vec2(0, 0));
+            
             tank->moveleft();
             break;
         case KEY_S_PRESSED:
             staticflag = willContact(Vec2(0, -2.5f));
-            staticflag2 = willContactTrap(Vec2(0, 0));
+       
             tank->movedown();
             break;
         case KEY_D_PRESSED:
 
             staticflag = willContact(Vec2(2.5f, 0));
-            staticflag2 = willContactTrap(Vec2(0, 0));
+          
             tank->moveright();
             break;
         case KEY_W_PRESSED:
 
             staticflag = willContact(Vec2(0, 2.5f));
-            staticflag2 = willContactTrap(Vec2(0, 0));
+          
             tank->moveup();
             break;
         case KEY_P_PRESSED:
@@ -543,8 +543,8 @@ void Level2_1::update(float delta) {
     }
     ContactBullet();
     tank->update(delta, staticflag);
-    tank->stopmoving();
-    tank->update(delta, staticflag2);
+    willContactTrap(Vec2(0,0));
+    
     if (ison) {
         elapsedTime += delta;
         if (elapsedTime >= 1.0f) {
@@ -559,6 +559,18 @@ bool Level2_1::init()
         {
             return false;
         }
+        std::ifstream file1;
+        file1.open("level.txt");
+        std::string ss;
+        std::ofstream file2;
+        getline(file1, ss);
+        file1.close();
+        file2.open("level.txt");
+        if (stoi(ss) < 2)
+            file2 << "2";
+        else
+            file2 << ss;
+        file2.close();
         auto background1 = cocos2d::AudioEngine::play2d("Dreams.mp3", true, 1.0f);
         auto visibleSize = Director::getInstance()->getVisibleSize();
         Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -657,6 +669,7 @@ bool Level2_1::init()
     {
         //position the sprite on the center of the screen
         tank->setScale(32 / 28);
+       
         tank->setScale(scale);
         //add the sprite as a child to this layer
         this->addChild(tank, 0);

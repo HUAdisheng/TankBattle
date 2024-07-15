@@ -836,6 +836,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="..\Classes\FirstScene.h" />
     <ClInclude Include="..\Classes\Level1_1.h" />
     <ClInclude Include="..\Classes\Level2_1.h" />
+    <ClInclude Include="..\Classes\Level3_1.h" />
     <ClInclude Include="..\Classes\LevelSelect.h" />
     <ClInclude Include="..\Classes\Tank.h" />
     <ClInclude Include="C:\solution\TankBattle\Classes\AppDelegate.h" />
@@ -846,6 +847,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="..\Classes\FirstScene.cpp" />
     <ClCompile Include="..\Classes\Level1_1.cpp" />
     <ClCompile Include="..\Classes\Level2_1.cpp" />
+    <ClCompile Include="..\Classes\Level3_1.cpp" />
     <ClCompile Include="..\Classes\LevelSelect.cpp" />
     <ClCompile Include="..\Classes\Tank .cpp" />
     <ClCompile Include="C:\solution\TankBattle\Classes\AppDelegate.cpp" />

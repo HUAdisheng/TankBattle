@@ -81,6 +81,15 @@ void Level7_1::event_win()//游戏win!
     buttonback->addTouchEventListener(CC_CALLBACK_2(Level7_1::buttonbackCallback, this));
     this->addChild(buttonback);
 };
+void Level7_1::godupdate()
+{
+    if (tank->God_mode > 0) {
+        tank->setOpacity(150);
+        tank->God_mode--;
+    }
+    else
+        tank->setOpacity(255);
+}
 Vec2 Level7_1::calculation(Tank* tank) {
     auto newPosition = tank->getPosition();
     auto r = tank->getRotation();
@@ -189,29 +198,6 @@ void Level7_1::Pausemenu()
     buttonBack->setPressedActionEnabled(true);
     buttonBack->addTouchEventListener(CC_CALLBACK_2(Level7_1::buttonbackCallback, this));
     this->addChild(buttonBack, 0, 6);
-    //Help
-    auto labeltip = Label::createWithTTF("tip", "fonts/Marker Felt.ttf", 60);
-    if (labeltip == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        labeltip->setPosition(Vec2(origin.x + visibleSize.width / 2,
-            origin.y + (visibleSize.height) -  labeltip->getContentSize().height));
-
-        // add the label as a child to this layer
-        this->addChild(labeltip, 0, 1);
-    }
-
-    auto buttontip = ui::Button::create("defaultbutton_normal.png", "defaultbutton_seleted.png", "disabled_image.png");//NEW GAME
-    buttontip->setScale(visibleSize.width / buttontip->getContentSize().width / 21, visibleSize.height / buttontip->getContentSize().height / 16);
-    buttontip->setPosition(Vec2(origin.x + visibleSize.width / 2-labeltip->getContentSize().width/2-buttontip->getContentSize().width,
-        origin.y + (visibleSize.height) - labeltip->getContentSize().height));
-    buttontip->setPressedActionEnabled(true);
-    buttontip->addTouchEventListener(CC_CALLBACK_2(Level7_1::buttontipCallback, this));
-    this->addChild(buttontip, 0, 2);
 
 
 }
@@ -239,11 +225,6 @@ void Level7_1::buttoncontinueCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::To
     this->removeChildByTag(6);
     this->removeChildByTag(7);
 }
-void Level7_1::buttontipCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
-{
-   
-}
-
 //去主菜单
 void Level7_1::buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
@@ -922,7 +903,6 @@ void Level7_1::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::E
     }
     
 }
-
 void Level7_1::update(float delta) {
 
     //player
@@ -966,6 +946,7 @@ void Level7_1::update(float delta) {
     }
     ContactBullet();
     tank->update(delta, staticflag);
+    godupdate();
     willContactOther(Vec2(0, 0));
     Rect rect = tank->getBoundingBox();
 
@@ -1012,7 +993,19 @@ bool Level7_1::init()
     {
         return false;
     }
-    auto background1 = cocos2d::AudioEngine::play2d("run.mp3", true, 1.0f);
+    std::ifstream file1;
+    file1.open("level.txt");
+    std::string ss;
+    std::ofstream file2;
+    getline(file1, ss);
+    file1.close();
+    file2.open("level.txt");
+    if (stoi(ss) < 7)
+        file2 << "7";
+    else
+        file2 << ss;
+    file2.close();
+    auto background1 = cocos2d::AudioEngine::play2d("Dreams.mp3", true, 1.0f);
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     //地图砖块的大小
@@ -1031,7 +1024,7 @@ bool Level7_1::init()
     offsetY = (winSize.height - mapHeight * scale) / 2;
     //渲染地图
 
-    auto sprite = Sprite::create("background.png");
+    auto sprite = Sprite::create("background_seven.png");
     sprite->setScale(visibleSize.width / sprite->getContentSize().width, visibleSize.height / sprite->getContentSize().height);
     if (sprite == nullptr)
     {
@@ -1133,15 +1126,7 @@ bool Level7_1::init()
 
             if (physicsbody[y][x])
             {
-               if (map[y][x] == 1)
-                {
-                    auto sprite = Sprite::create("1.png");
-                    sprite->setOpacity(10);
-                    sprite->setScale(scale);
-                    sprite->setPosition(Vec2(x * tileSize * scale + offsetX, (mapy - 1 - y) * tileSize * scale + offsetY));
-                    sprite->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-                    this->addChild(sprite);
-                }
+               
                 physicsbody[y][x]->setScale(scale);
                 physicsbody[y][x]->setPosition(Vec2(x * tileSize * scale + offsetX, (mapy - 1 - y) * tileSize * scale + offsetY));
                 physicsbody[y][x]->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
@@ -1151,12 +1136,12 @@ bool Level7_1::init()
     }
 
     //add tank below
-    tank = Tank::create("OriginalTank.png");
+    tank = Tank::create("tank.png");
     if (tank != nullptr)
     {
         //position the sprite on the center of the screen
 
-        tank->setScale(scale * 32 / 40);
+        tank->setScale(scale * 32 / 50);
         //add the sprite as a child to this layer
         this->addChild(tank, 0);
         Rect rect = tank->getBoundingBox();

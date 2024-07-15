@@ -6,8 +6,7 @@
 #include <vector>
 
 extern enum KeyState;
-const int mapy = 15;
-const int mapx = 15;
+
 class Level2_1 :
     public cocos2d::Scene
 {
@@ -26,8 +25,9 @@ public:
     void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
     void update(float delta);
     Vec2 calculation(Tank* tank);
-    bool willContactTrap(Vec2 vec);
+    void willContactTrap(Vec2 vec);
     void ContactBullet();
+   
     void destroyMap(Bullet* bullet);
     bool willContactBullet(Bullet* bullet);
     int target = 0;
@@ -61,7 +61,9 @@ private:
   
     int ix = 0;
     int iy = 0;
-    Sprite* physicsbody[mapy][mapx];
+    int mapy = 15;
+    int mapx = 15;
+    Sprite* physicsbody[15][15];
     std::vector<Bullet*> m_bullet;
     Vec2 birthpos;
     EventListenerKeyboard* listener = EventListenerKeyboard::create();
@@ -76,7 +78,7 @@ private:
     float scale;
     float tankWidth;
     float tankHeight;
-    int map[mapy][mapx] = {
+    int map[15][15] = {
         {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,6,6},
         {6, 5, 6, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5,8,6},
         {6, 6, 5, 1, 5, 5, 6, 5, 6, 5, 6, 4, 13,12,6},

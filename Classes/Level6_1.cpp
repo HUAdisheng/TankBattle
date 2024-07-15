@@ -153,12 +153,98 @@ void Level6_1::buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchE
 {
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
     {
-        AudioEngine::stopAll();
         auto tryagain = FirstScene::createScene();
         TransitionFade* trs = TransitionFade::create(1.0, tryagain);
         Director::getInstance()->replaceScene(trs);
     }
     return;
+}
+void Level6_1::buttontryCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
+{
+    if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
+    {
+        AudioEngine::stopAll();
+        auto tryagain = Level6_1::createScene();
+        TransitionFade* trs = TransitionFade::create(1.0, tryagain);
+        Director::getInstance()->replaceScene(trs);
+    }
+    return;
+}
+void Level6_1::buttonnextCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
+{
+    if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
+    {
+
+        auto next = Level7_1::createScene();
+        TransitionFade* trs = TransitionFade::create(1.0, next);
+        Director::getInstance()->replaceScene(trs);
+    }
+    return;
+}
+void Level6_1::event_gameover()
+{
+    Level6_1::unscheduleUpdate();
+    AudioEngine::stopAll();
+    auto visibleSize = Director::getInstance()->getVisibleSize();
+    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+    auto label1 = Label::createWithTTF("Game over:(", "fonts/Marker Felt.ttf", 60);
+    if (label1 == nullptr)
+    {
+        problemLoading("'fonts/Marker Felt.ttf'");
+    }
+    else
+    {
+        // position the label on the center of the screen
+        label1->setPosition(Vec2(origin.x + visibleSize.width / 2,
+            origin.y + (visibleSize.height) / 2));
+
+        // add the label as a child to this layer
+        this->addChild(label1);
+    }
+    auto label2 = Label::createWithTTF("try again", "fonts/Marker Felt.ttf", 60);
+    if (label2 == nullptr)
+    {
+        problemLoading("'fonts/Marker Felt.ttf'");
+    }
+    else
+    {
+        // position the label on the center of the screen
+        label2->setPosition(Vec2(origin.x + visibleSize.width / 2,
+            origin.y + (visibleSize.height) / 2 - label1->getContentSize().height));
+
+        // add the label as a child to this layer
+        this->addChild(label2);
+    }
+    auto buttontry = ui::Button::create("defaultbutton_normal.png", "defaultbutton_seleted.png", "disabled_image.png");
+    buttontry->setScale(visibleSize.width / buttontry->getContentSize().width / 21, visibleSize.height / buttontry->getContentSize().height / 16);
+    buttontry->setPosition(Vec2(origin.x + (visibleSize.width / 2) - (label2->getContentSize().width / 2) - buttontry->getContentSize().width,
+        origin.y + (visibleSize.height) / 2 - label1->getContentSize().height));
+    buttontry->setPressedActionEnabled(true);
+    buttontry->addTouchEventListener(CC_CALLBACK_2(Level6_1::buttontryCallback, this));
+    this->addChild(buttontry);
+    auto label3 = Label::createWithTTF("go back to the start menu", "fonts/Marker Felt.ttf", 60);
+    if (label3 == nullptr)
+    {
+        problemLoading("'fonts/Marker Felt.ttf'");
+    }
+    else
+    {
+        // position the label on the center of the screen
+        label3->setPosition(Vec2(origin.x + visibleSize.width / 2,
+            origin.y + (visibleSize.height) / 2 - label1->getContentSize().height - label2->getContentSize().height));
+
+        // add the label as a child to this layer
+        this->addChild(label3);
+    }
+    auto buttonback = ui::Button::create("defaultbutton_normal.png", "defaultbutton_seleted.png", "disabled_image.png");
+    buttonback->setScale(visibleSize.width / buttonback->getContentSize().width / 21, visibleSize.height / buttonback->getContentSize().height / 16);
+    buttonback->setPosition(Vec2(origin.x + (visibleSize.width / 2) - (label3->getContentSize().width / 2) - buttonback->getContentSize().width,
+        origin.y + (visibleSize.height) / 2 - label1->getContentSize().height - label2->getContentSize().height));
+    buttonback->setPressedActionEnabled(true);
+    buttonback->addTouchEventListener(CC_CALLBACK_2(Level6_1::buttonbackCallback, this));
+    this->addChild(buttonback);
+
 }
 void Level6_1::Fire(cocos2d::Vec2 origin, float angle, float speed,int type) {
     if (type == 1)
@@ -318,6 +404,7 @@ void Level6_1::ContactBullet()
                 lifes--;
                 godtype = true;
                 tank->setOpacity(150);
+                tank->God_mode = 180;
                 auto delay1 = DelayTime::create(3.0f);
                 auto callFunc1 = CallFunc::create(CC_CALLBACK_0(Level6_1::godmodecancel, this));
                 auto sequence1 = Sequence::create(delay1, callFunc1, nullptr);
@@ -415,7 +502,69 @@ void Level6_1::destroyMap(Bullet* bullet)
         }
     }
 }
+void Level6_1::event_win()//游戏win!
+{
+    AudioEngine::stopAll();
+    Level6_1::unscheduleUpdate();
+    auto visibleSize = Director::getInstance()->getVisibleSize();
+    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+    auto label1 = Label::createWithTTF("WIN!!", "fonts/Marker Felt.ttf", 60);
+    if (label1 == nullptr)
+    {
+        problemLoading("'fonts/Marker Felt.ttf'");
+    }
+    else
+    {
+        // position the label on the center of the screen
+        label1->setPosition(Vec2(origin.x + visibleSize.width / 2,
+            origin.y + (visibleSize.height) / 2));
 
+        // add the label as a child to this layer
+        this->addChild(label1);
+    }
+    auto label2 = Label::createWithTTF("Next Level", "fonts/Marker Felt.ttf", 60);
+    if (label2 == nullptr)
+    {
+        problemLoading("'fonts/Marker Felt.ttf'");
+    }
+    else
+    {
+        // position the label on the center of the screen
+        label2->setPosition(Vec2(origin.x + visibleSize.width / 2,
+            origin.y + (visibleSize.height) / 2 - label1->getContentSize().height));
+
+        // add the label as a child to this layer
+        this->addChild(label2);
+    }
+    auto buttonnext = ui::Button::create("defaultbutton_normal.png", "defaultbutton_seleted.png", "disabled_image.png");
+    buttonnext->setScale(visibleSize.width / buttonnext->getContentSize().width / 21, visibleSize.height / buttonnext->getContentSize().height / 16);
+    buttonnext->setPosition(Vec2(origin.x + (visibleSize.width / 2) - (label2->getContentSize().width / 2) - buttonnext->getContentSize().width,
+        origin.y + (visibleSize.height) / 2 - label1->getContentSize().height));
+    buttonnext->setPressedActionEnabled(true);
+    buttonnext->addTouchEventListener(CC_CALLBACK_2(Level6_1::buttonnextCallback, this));
+    this->addChild(buttonnext);
+    auto label3 = Label::createWithTTF("go back to the start menu", "fonts/Marker Felt.ttf", 60);
+    if (label3 == nullptr)
+    {
+        problemLoading("'fonts/Marker Felt.ttf'");
+    }
+    else
+    {
+        // position the label on the center of the screen
+        label3->setPosition(Vec2(origin.x + visibleSize.width / 2,
+            origin.y + (visibleSize.height) / 2 - label1->getContentSize().height - label2->getContentSize().height));
+
+        // add the label as a child to this layer
+        this->addChild(label3);
+    }
+    auto buttonback = ui::Button::create("defaultbutton_normal.png", "defaultbutton_seleted.png", "disabled_image.png");
+    buttonback->setScale(visibleSize.width / buttonback->getContentSize().width / 21, visibleSize.height / buttonback->getContentSize().height / 16);
+    buttonback->setPosition(Vec2(origin.x + (visibleSize.width / 2) - (label3->getContentSize().width / 2) - buttonback->getContentSize().width,
+        origin.y + (visibleSize.height) / 2 - label1->getContentSize().height - label2->getContentSize().height));
+    buttonback->setPressedActionEnabled(true);
+    buttonback->addTouchEventListener(CC_CALLBACK_2(Level6_1::buttonbackCallback, this));
+    this->addChild(buttonback);
+};
 void Level6_1::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
     Keystate[keyCode] = true;
     switch (keyCode) {
@@ -518,7 +667,7 @@ void Level6_1::update(float delta) {
    
     if (Bosslife <= 0) {
         AudioEngine::stopAll();
-        auto hello = Level6_1::createScene();
+        auto hello = Level7_1::createScene();
         TransitionFade* trs = TransitionFade::create(1.0, hello);
         Director::getInstance()->replaceScene(trs);
     } 
@@ -532,10 +681,7 @@ void Level6_1::update(float delta) {
         three = true;
     }
     if (lifes <=0) {
-        AudioEngine::stopAll();
-        auto hello =FirstScene::createScene();
-        TransitionFade* trs = TransitionFade::create(1.0, hello);
-        Director::getInstance()->replaceScene(trs);
+        event_gameover();
     }
     if (one) {
         elapsedTime += delta;
@@ -679,7 +825,19 @@ bool Level6_1::init()
         {
             return false;
         }
-        auto background1 = cocos2d::AudioEngine::play2d("run.mp3", true, 1.0f);
+        std::ifstream file1;
+        file1.open("level.txt");
+        std::string ss;
+        std::ofstream file2;
+        getline(file1, ss);
+        file1.close();
+        file2.open("level.txt");
+        if (stoi(ss) < 6)
+            file2 << "6";
+        else
+            file2 << ss;
+        file2.close();
+        auto background1 = cocos2d::AudioEngine::play2d("fight_six.mp3", true, 1.0f);
         auto visibleSize = Director::getInstance()->getVisibleSize();
         Vec2 origin = Director::getInstance()->getVisibleOrigin();
         //地图砖块的大小

@@ -5,8 +5,11 @@
 #include"HelloWorldScene.h"
 #include"Level1_1.h"
 #include"Level2_1.h"
+#include"Level3_1.h"
 #include"Level5_1.h"
 #include"Level4_1.h"
+#include"Level6_1.h"
+#include"Level7_1.h"
 #include<iostream>
 #include<fstream>
 #include<string>

@@ -4,7 +4,6 @@
 #include "Bullet.h"
 #include"Tank.h"
 #include <vector>
-
 extern enum KeyState;
 const int mapy = 30;
 const int mapx = 39;

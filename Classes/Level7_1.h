@@ -15,13 +15,14 @@ public:
     static cocos2d::Scene* createScene();
     virtual bool init();
     void Pausemenu();
-    void buttontipCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type);
+  
     void buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type);
     void buttonselectLCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type);
     void buttoncontinueCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type);
     void Fire(cocos2d::Vec2 origin, float angle, float speed, int type);
     bool willContact(Vec2 vec);
     int getType(Vec2 pos);
+    void godupdate();
     void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
     void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
     void update(float delta);

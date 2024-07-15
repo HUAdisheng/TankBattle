@@ -31,6 +31,7 @@ public:
     void boss_skill_1();
     void boss_skill_2();
     void boss_skill_3();
+    void removeSeparation();
     void boss_skill_4();
     void godmodecancel();
     void update(float delta);
@@ -41,6 +42,7 @@ public:
     CREATE_FUNC(Level5_1);
     float elapsedTime = 0.0f;
 private:
+    int boss_separation = 1;
     int mapy = 20;
     int mapx = 26;
     int ix = 0;
@@ -58,6 +60,7 @@ private:
     float lastFireTime = 0.0f;
     Tank* tank;
     Tank* apple_boss;
+    std::vector<Tank*>boss;
     float delta;
     KeyState ks;
     std::map<cocos2d::EventKeyboard::KeyCode, bool>Keystate;

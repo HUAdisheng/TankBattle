@@ -6,8 +6,7 @@
 #include <vector>
 
 extern enum KeyState;
-const int mapy = 20;
-const int mapx = 26;
+
 class Level6_1 :
     public cocos2d::Scene
 {
@@ -20,6 +19,8 @@ public:
     void buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type);
     void buttonselectLCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type);
     void buttoncontinueCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type);
+    void buttontryCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type);
+    void buttonnextCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type);
     void Fire(cocos2d::Vec2 origin, float angle, float speed,int type);
     bool willContact(Vec2 vec);
     int  getType(Vec2 pos);
@@ -28,12 +29,13 @@ public:
     void update(float delta);
     Vec2 calculation(Tank* tank);
     bool willContactTrap(Vec2 vec);
+    void event_gameover();
     void ContactBullet();
     void destroyMap(Bullet* bullet);
     bool willContactBullet(Bullet* bullet);
     int target = 0;
     float j = 0.0f;
-    
+    void event_win();
     bool ison = false;
     void dategold() {
         for (int y = 0; y < mapy; ++y)
@@ -71,10 +73,11 @@ public:
     int repeatcount = 0;
 private:
     Tank* Boss;
-   
+    int mapy = 20;
+    int mapx = 26;
     int ix = 0;
     int iy = 0;
-    Sprite* physicsbody[mapy][mapx];
+    Sprite* physicsbody[26][20];
     std::vector<Bullet*> m_bullet;
     Vec2 birthpos;
     EventListenerKeyboard* listener = EventListenerKeyboard::create();
@@ -103,7 +106,7 @@ private:
     bool existed = false;
    
     bool godtype = false;
-    int map[mapy][mapx] = {
+    int map[20][26] = {
         {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,6,6,6,6,6,6,6,6,6,6,6,6,6},
         {6, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,5,5,5,5,5,5,5,5,5,5,5,5,6},
         {6, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,5,5,5,5,5,5,5,5,5,5,6},

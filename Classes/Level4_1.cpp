@@ -210,15 +210,12 @@ bool Level4_1::willContact(Vec2 vec)
 {
     // 获取坦克位置信息与尺寸
     Rect rect = tank->getBoundingBox();
-
     //将坦克Y坐标转换为地图上的Y坐标
     float MinY = rect.getMinY();
     float MaxY = rect.getMaxY();
-
     // 计算坦克的四顶点坐标
     float MinX = rect.getMinX();
     float MaxX = rect.getMaxX();
-
     Vec2 point[4];
     point[0] = Vec2(MinX + vec.x, MinY + vec.y);
     point[1] = Vec2(MinX + vec.x, MaxY + vec.y);
@@ -444,13 +441,18 @@ bool Level4_1::init()
     {
         return false;
     }
-    std::fstream file;
-    file.open("level.txt");
+    std::ifstream file1;
+    file1.open("level.txt");
     std::string ss;
-    std::getline(file, ss);
-    if (stoi(ss) < 2)
-        file << "2";
-    file.close();
+    std::ofstream file2;
+    getline(file1, ss);
+    file1.close();
+    file2.open("level.txt");
+    if (stoi(ss) < 4)
+        file2 << "4";
+    else
+        file2 << ss;
+    file2.close();
     auto background1 = cocos2d::AudioEngine::play2d("run.mp3", true, 1.0f);
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();

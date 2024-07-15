@@ -15,12 +15,20 @@ public:
     void stopmoving();
     bool isReachBoundry();
     void deletetank();
+    float setTankspeed(float speed);
+    void setGod_mode(int God_mode_time);
+    float Tank_Speed;
+    bool isAlive() const;
     void speedup(float times);
+    int God_mode;
 private:
+   // float Tank_Speed;
     Vec2 vec;
     Vec2 Tank_Current_Postion;
     int Lives;
-    //Bullet* bullet;
-
+    bool _isAlive = true;
+    
+    //≤‚ ‘
+    
 };
 #endif

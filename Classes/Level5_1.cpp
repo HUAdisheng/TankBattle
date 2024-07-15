@@ -152,7 +152,7 @@ void Level5_1::buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchE
 {
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
     {
-        AudioEngine::stopAll();
+        
         auto tryagain = FirstScene::createScene();
         TransitionFade* trs = TransitionFade::create(1.0, tryagain);
         Director::getInstance()->replaceScene(trs);
@@ -173,7 +173,8 @@ void Level5_1::buttonnextCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchE
 {
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
     {
-        auto next = Level5_1::createScene();
+        
+        auto next = Level6_1::createScene();
         TransitionFade* trs = TransitionFade::create(1.0, next);
         Director::getInstance()->replaceScene(trs);
     }
@@ -314,22 +315,27 @@ void Level5_1::ContactBullet()
                 lifepoint--;
                 godtype = true;
                 tank->setOpacity(150);
+                tank->God_mode = 180;
                 auto delay1 = DelayTime::create(3.0f);
                 auto callFunc1 = CallFunc::create(CC_CALLBACK_0(Level5_1::godmodecancel, this));
                 auto sequence1 = Sequence::create(delay1, callFunc1, nullptr);
                 this->runAction(sequence1);
             }
-            
-            
         }
-        else if (apple_boss->getBoundingBox().intersectsRect(m_bullet[i]->getBoundingBox())) 
+        else 
         {
-            if (m_bullet[i]->gettype() == 1)
-            {
-                m_bullet[i]->deletebullet();
-                m_bullet.erase(m_bullet.begin() + i);
-                boss_lp--;
-            }
+                if (apple_boss->getBoundingBox().intersectsRect(m_bullet[i]->getBoundingBox()))
+                {
+                    if (m_bullet[i]->gettype() == 1)
+                    {
+                        m_bullet[i]->deletebullet();
+                        m_bullet.erase(m_bullet.begin() + i);
+                        boss_lp--;
+                    }
+                }
+
+            
+            
         }
         /*else
         {
@@ -442,10 +448,61 @@ void Level5_1::boss_skill_3()//bottom
             , 90.0f, applespeed, 2);
     }
 }
+void Level5_1::removeSeparation() {
+    if (boss[boss_separation-1]) 
+    {
+        this->removeChild(boss[boss_separation-1]);
+        boss.pop_back();
+        boss_separation--;
+    }
+}
 void Level5_1::boss_skill_4()
 {
     targetpos = tank->getPosition();
     bossmove = true;
+    apple_boss->runAction(MoveTo::create(1.0f, targetpos));
+    Vec2 bosspos = apple_boss->getPosition();
+    
+    Tank* separation1 = Tank::create("apple_boss.png");
+    separation1->setScale(scale * 2.0f);
+    separation1->setPosition(Vec2(1 * tileSize * scale + offsetX + separation1->getContentSize().width / 2, (mapy - 1 - 1) * tileSize * scale + offsetY + separation1->getContentSize().height / 2));
+    this->addChild(separation1);
+    boss.push_back(separation1);
+    boss_separation++;
+
+    Tank* separation2 = Tank::create("apple_boss.png");
+    separation2->setScale(scale * 2.0f);
+    separation2->setPosition(Vec2(23 * tileSize * scale + offsetX + separation2->getContentSize().width/2, (mapy - 1 - 1) * tileSize * scale + offsetY + separation2->getContentSize().height / 2));
+    this->addChild(separation2);
+    boss.push_back(separation2);
+    boss_separation++;
+
+    Tank* separation3 = Tank::create("apple_boss.png");
+    separation3->setScale(scale * 2.0f);
+    separation3->setPosition(Vec2(23 * tileSize * scale + offsetX + separation3->getContentSize().width / 2, (mapy - 1 - 17) * tileSize * scale + offsetY + separation3->getContentSize().height / 2));
+    this->addChild(separation3);
+    boss.push_back(separation3);
+    boss_separation++;
+
+    Tank* separation4 = Tank::create("apple_boss.png");
+    separation4->setScale(scale * 2.0f);
+    separation4->setPosition(Vec2(1 * tileSize * scale + offsetX + separation4->getContentSize().width / 2, (mapy - 1 - 17) * tileSize * scale + offsetY + separation4->getContentSize().height / 2));
+    this->addChild(separation4);
+    boss.push_back(separation4);
+    boss_separation++;
+   
+        auto call1 = CallFunc::create(CC_CALLBACK_0(Level5_1::removeSeparation, this));
+        Sequence* sequence1 = Sequence::create(MoveTo::create(1.5f, targetpos), call1, nullptr);
+        auto call2 = CallFunc::create(CC_CALLBACK_0(Level5_1::removeSeparation, this));
+        Sequence* sequence2 = Sequence::create(MoveTo::create(1.5f, targetpos), call2, nullptr);
+        auto call3 = CallFunc::create(CC_CALLBACK_0(Level5_1::removeSeparation, this));
+        Sequence* sequence3 = Sequence::create(MoveTo::create(1.5f, targetpos), call3, nullptr);
+        auto call4 = CallFunc::create(CC_CALLBACK_0(Level5_1::removeSeparation, this));
+        Sequence* sequence4 = Sequence::create(MoveTo::create(1.5f, targetpos), call4, nullptr);
+        boss[4]->runAction(sequence4);
+        boss[3]->runAction(sequence3);
+        boss[2]->runAction(sequence2);
+        boss[1]->runAction(sequence1);
 }
 void Level5_1::boss_skill()
 {
@@ -465,7 +522,6 @@ void Level5_1::boss_skill()
     auto sequence2 = Sequence::create(delay2, callFunc2, nullptr);
     this->runAction(sequence2);
     
-
     auto delay3 = DelayTime::create(6.0f);
     auto callFunc3 = CallFunc::create(CC_CALLBACK_0(Level5_1::boss_skill_3, this));
     auto sequence3 = Sequence::create(delay3, callFunc3, nullptr);
@@ -533,6 +589,7 @@ void Level5_1::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::E
 void Level5_1::event_gameover()
 {
         Level5_1::unscheduleUpdate();
+        AudioEngine::stopAll();
         auto visibleSize = Director::getInstance()->getVisibleSize();
         Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
@@ -596,6 +653,7 @@ void Level5_1::event_gameover()
 }
 void Level5_1::event_win()//ÓÎÏ·win!
 {
+    AudioEngine::stopAll();
     Level5_1::unscheduleUpdate();
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -727,25 +785,24 @@ void Level5_1::update(float delta) {
         boss_skill();
         elapsedTime = 0;
     }
-    //chase
-    if (bossmove)
-    {
-        if (apple_boss->getPosition() != targetpos)
-        {
-            apple_boss->setPosition(chaserx + 6.0f * distancex / l, chasery + 6.0f * distancey / l);
-        }
-    }
-        
-    
+
     if (!godtype)
     {
-        if (fabs(chaserx - tank->getPosition().x) <= tank->getContentSize().width &&
-            fabs(chasery - tank->getPosition().y) <= tank->getContentSize().height)
+        for (int i = 0; i < boss.size(); i++)
         {
-            tank->deletetank();
-            lifepoint--;
-            
-
+            if (fabs(boss[i]->getPosition().x - tank->getPosition().x) <= tank->getContentSize().width &&
+                fabs(boss[i]->getPosition().y - tank->getPosition().y) <= tank->getContentSize().height)
+            {
+                tank->deletetank();
+                lifepoint--;
+                godtype = true;
+                tank->setOpacity(150);
+                auto delay1 = DelayTime::create(3.0f);
+                auto callFunc1 = CallFunc::create(CC_CALLBACK_0(Level5_1::godmodecancel, this));
+                auto sequence1 = Sequence::create(delay1, callFunc1, nullptr);
+                this->runAction(sequence1);
+                
+            }
         }
     }
 }
@@ -756,13 +813,18 @@ bool Level5_1::init()
         return false;
     }
     lifepoint = 3;
-    std::fstream file;
-    file.open("level.txt");
+    std::ifstream file1;
+    file1.open("level.txt");
     std::string ss;
-    std::getline(file, ss);
+    std::ofstream file2;
+    getline(file1, ss);
+    file1.close();
+    file2.open("level.txt");
     if (stoi(ss) < 5)
-        file << "5";
-    file.close();
+        file2 << "5";
+    else
+        file2 << ss;
+    file2.close();
     auto background1 = cocos2d::AudioEngine::play2d("fight_apple.mp3", true, 0.5f);
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -844,7 +906,7 @@ bool Level5_1::init()
         //add the sprite as a child to this layer
         apple_boss->setPosition(Vec2(13 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 5) * tileSize * scale + offsetY + tankHeight / 2));
         this->addChild(apple_boss, 0);
-        
+        boss.push_back(apple_boss);
     }
 
     //add keyboard listenser below

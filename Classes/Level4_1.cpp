@@ -1,10 +1,13 @@
 #include "Level4_1.h"
 USING_NS_CC;
+
 Scene* Level4_1::createScene()
 {
     return Level4_1::create();
 }
-Vec2 Level4_1::calculation(Tank* tank) {
+
+Vec2 Level4_1::calculation(Tank* tank) 
+{
     auto newPosition = tank->getPosition();
     auto r = tank->getRotation();
     auto size = tank->getContentSize();
@@ -23,11 +26,13 @@ Vec2 Level4_1::calculation(Tank* tank) {
     }
     return newPosition;
 }
+
 static void problemLoading(const char* filename)
 {
     printf("Error while loading: %s\n", filename);
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
+
 void Level4_1::Pausemenu()
 {
     listener->setEnabled(false);
@@ -65,11 +70,16 @@ void Level4_1::Pausemenu()
     }
 
     auto buttoncontinue = ui::Button::create("defaultbutton_normal.png", "defaultbutton_seleted.png", "disabled_image.png");//NEW GAME
+   
     buttoncontinue->setScale(visibleSize.width / buttoncontinue->getContentSize().width / 21, visibleSize.height / buttoncontinue->getContentSize().height / 16);
+    
     buttoncontinue->setPosition(Vec2(origin.x + (visibleSize.width / 2) - (labelcontinue->getContentSize().width / 2) - buttoncontinue->getContentSize().width,
         origin.y + (visibleSize.height) / 2 + 2 * labelcontinue->getContentSize().height));
+    
     buttoncontinue->setPressedActionEnabled(true);
+    
     buttoncontinue->addTouchEventListener(CC_CALLBACK_2(Level4_1::buttoncontinueCallback, this));
+    
     this->addChild(buttoncontinue, 0, 2);
 
     auto labelselectL = Label::createWithTTF("select level", "fonts/Marker Felt.ttf", 60);
@@ -88,11 +98,16 @@ void Level4_1::Pausemenu()
     }
 
     auto buttonselectL = ui::Button::create("defaultbutton_normal.png", "defaultbutton_seleted.png", "disabled_image.png");//NEW GAME
+    
     buttonselectL->setScale(visibleSize.width / buttonselectL->getContentSize().width / 21, visibleSize.height / buttonselectL->getContentSize().height / 16);
+    
     buttonselectL->setPosition(Vec2(origin.x + (visibleSize.width / 2) - (labelselectL->getContentSize().width / 2) - buttonselectL->getContentSize().width,
         origin.y + (visibleSize.height) / 2));
+    
     buttonselectL->setPressedActionEnabled(true);
+    
     buttonselectL->addTouchEventListener(CC_CALLBACK_2(Level4_1::buttonselectLCallback, this));
+    
     this->addChild(buttonselectL, 0, 4);
 
     auto labelBack = Label::createWithTTF("go back to the start menu", "fonts/Marker Felt.ttf", 60);
@@ -111,16 +126,22 @@ void Level4_1::Pausemenu()
     }
 
     auto buttonBack = ui::Button::create("defaultbutton_normal.png", "defaultbutton_seleted.png", "disabled_image.png");//NEW GAME
+    
     buttonBack->setScale(visibleSize.width / buttonBack->getContentSize().width / 21, visibleSize.height / buttonBack->getContentSize().height / 16);
+    
     buttonBack->setPosition(Vec2(origin.x + (visibleSize.width / 2) - (labelBack->getContentSize().width / 2) - buttonBack->getContentSize().width,
         origin.y + (visibleSize.height) / 2 - 2 * labelBack->getContentSize().height));
+    
     buttonBack->setPressedActionEnabled(true);
+   
     buttonBack->addTouchEventListener(CC_CALLBACK_2(Level4_1::buttonbackCallback, this));
+    
     this->addChild(buttonBack, 0, 6);
 
 
 
 }
+
 //去选择关卡界面
 void Level4_1::buttonselectLCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
@@ -132,6 +153,7 @@ void Level4_1::buttonselectLCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::Tou
     }
     return;
 }
+
 //游戏继续
 void Level4_1::buttoncontinueCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
@@ -145,6 +167,7 @@ void Level4_1::buttoncontinueCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::To
     this->removeChildByTag(6);
     this->removeChildByTag(7);
 }
+
 //去主菜单
 void Level4_1::buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
@@ -157,6 +180,7 @@ void Level4_1::buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchE
     }
     return;
 }
+
 void Level4_1::Fire(cocos2d::Vec2 origin, float angle, float speed) {
     if (cocos2d::Director::getInstance()->getTotalFrames() / 60 - lastFireTime >= 1.0f) {
         m_bullet = Bullet::create("bullet.png");
@@ -170,6 +194,7 @@ void Level4_1::Fire(cocos2d::Vec2 origin, float angle, float speed) {
     }
     lastFireTime = cocos2d::Director::getInstance()->getTotalFrames() / 60;
 }
+
 int Level4_1::getType(Vec2 pos)
 {
     float x = (pos.x - offsetX) / tileSize / scale;
@@ -181,7 +206,8 @@ int Level4_1::getType(Vec2 pos)
     ix = (int)x;
     iy = (int)y;
 
-    switch (map[iy + 1][ix]) {
+    switch (map[iy + 1][ix])
+    {
     case 1:
         return 1;
     case 2:
@@ -206,6 +232,7 @@ int Level4_1::getType(Vec2 pos)
         return 0;
     }
 }
+
 bool Level4_1::willContact(Vec2 vec)
 {
     // 获取坦克位置信息与尺寸
@@ -221,8 +248,10 @@ bool Level4_1::willContact(Vec2 vec)
     point[1] = Vec2(MinX + vec.x, MaxY + vec.y);
     point[2] = Vec2(MaxX + vec.x, MinY + vec.y);
     point[3] = Vec2(MaxX + vec.x, MaxY + vec.y);
-    for (int i = 0; i < 4; i++) {
-        switch (getType(point[i])) {
+    for (int i = 0; i < 4; i++) 
+    {
+        switch (getType(point[i])) 
+        {
         case 1:
             return true;
         case 2:
@@ -238,6 +267,7 @@ bool Level4_1::willContact(Vec2 vec)
     }
     return false;
 }
+
 void Level4_1::willContactOther(Vec2 vec)
 {
     // 获取坦克位置信息与尺寸
@@ -256,7 +286,9 @@ void Level4_1::willContactOther(Vec2 vec)
     point[1] = Vec2(MinX + vec.x, MaxY + vec.y);
     point[2] = Vec2(MaxX + vec.x, MinY + vec.y);
     point[3] = Vec2(MaxX + vec.x, MaxY + vec.y);
-    for (int i = 0; i < 4; i++) {
+   
+    for (int i = 0; i < 4; i++)
+    {
         switch (getType(point[i])) 
         {
         case 6:
@@ -312,9 +344,12 @@ void Level4_1::willContactOther(Vec2 vec)
     }
     return ;
 }
-void Level4_1::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
+
+void Level4_1::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) 
+{
     Keystate[keyCode] = true;
-    switch (keyCode) {
+    switch (keyCode)
+    {
     case cocos2d::EventKeyboard::KeyCode::KEY_A:
         ks = KEY_A_PRESSED;
         tank->setRotation(-90.0f);
@@ -344,26 +379,35 @@ void Level4_1::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Ev
         break;
     }
 }
-void Level4_1::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
+
+void Level4_1::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) 
+{
     Keystate[keyCode] = false;
-    if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_A]) {
+    if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_A]) 
+    {
         tank->setRotation(-90.0f);
         ks = KEY_A_PRESSED;
     }
-    else if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_S]) {
+    else if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_S])
+    {
         tank->setRotation(180.0f);
         ks = KEY_S_PRESSED;
     }
-    else if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_D]) {
+    else if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_D]) 
+    {
         tank->setRotation(90.0f);
         ks = KEY_D_PRESSED;
     }
-    else if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_W]) {
+    else if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_W])
+    {
         tank->setRotation(0.0f);
         ks = KEY_W_PRESSED;
     }
+
 }
-void Level4_1::update(float delta) {
+
+void Level4_1::update(float delta) 
+{
     
     //player
     this->delta = delta;
@@ -375,8 +419,10 @@ void Level4_1::update(float delta) {
     {
         tank->stopmoving();
     }
-    else {
-        switch (ks) {
+    else 
+    {
+        switch (ks) 
+        {
         case KEY_A_PRESSED:
             staticflag = willContact(Vec2(-2.5f, 0));
             
@@ -404,8 +450,10 @@ void Level4_1::update(float delta) {
             break;
         }
     }
+
     tank->update(delta, staticflag);
     willContactOther(Vec2(0, 0));
+    
     //chaser
     float playx = tank->getPositionX();
     float playy = tank->getPositionY();
@@ -435,6 +483,7 @@ void Level4_1::update(float delta) {
         }
     }
 }
+
 bool Level4_1::init()
 {
     if (!Scene::init())
@@ -456,20 +505,26 @@ bool Level4_1::init()
     auto background1 = cocos2d::AudioEngine::play2d("run.mp3", true, 1.0f);
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
     //地图砖块的大小
     tileSize = 32;
+
     //获取窗口大小
     auto winSize = Director::getInstance()->getVisibleSize();
+    
     //计算地图总大小
     int mapWidth = sizeof(map[0]) / sizeof(int) * tileSize;
     int mapHeight = sizeof(map) / sizeof(map[0]) * tileSize;
+    
     //计算地图的缩放比例
     float scaleX = winSize.width / mapWidth;
     float scaleY = winSize.height / mapHeight;
     scale = MIN(scaleX, scaleY);
+    
     //计算地图在窗口的中心位置
     offsetX = (winSize.width - mapWidth * scale) / 2;
     offsetY = (winSize.height - mapHeight * scale) / 2;
+    
     //渲染地图
     for (int y = 0; y < mapy; ++y)
     {
@@ -547,6 +602,7 @@ bool Level4_1::init()
         tank->setPosition(Vec2(1 * tileSize * scale + offsetX + tankWidth / 2, (mapy - 1 - 1) * tileSize * scale + offsetY + tankHeight / 2));
     }
     m_bullet = NULL;
+    
     //add chase below
     chaser = Tank::create("chaser.png");
     if (chaser != nullptr)

@@ -174,5 +174,7 @@ gantt
   <img src="README.assets/2.png" width="500" height="500">
   <img src="README.assets/3.png" width="500" height="500">
   <img src="README.assets/4.png" width="500" height="500">
+  <img src="README.assets/实机演示1.png">
+  <img src="README.assets/实机演示2.png">
 </div>
 

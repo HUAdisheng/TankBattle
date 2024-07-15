@@ -102,6 +102,11 @@ static void problemLoading(const char* filename)
 }
 void Level3_1::Pausemenu()
 {
+    printf("Error while loading: %s\n", filename);
+    printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
+}
+void Level4_1::Pausemenu()
+{
     listener->setEnabled(false);
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -141,7 +146,7 @@ void Level3_1::Pausemenu()
     buttoncontinue->setPosition(Vec2(origin.x + (visibleSize.width / 2) - (labelcontinue->getContentSize().width / 2) - buttoncontinue->getContentSize().width,
         origin.y + (visibleSize.height) / 2 + 2 * labelcontinue->getContentSize().height));
     buttoncontinue->setPressedActionEnabled(true);
-    buttoncontinue->addTouchEventListener(CC_CALLBACK_2(Level3_1::buttoncontinueCallback, this));
+    buttoncontinue->addTouchEventListener(CC_CALLBACK_2(Level4_1::buttoncontinueCallback, this));
     this->addChild(buttoncontinue, 0, 2);
 
     auto labelselectL = Label::createWithTTF("select level", "fonts/Marker Felt.ttf", 60);
@@ -164,7 +169,7 @@ void Level3_1::Pausemenu()
     buttonselectL->setPosition(Vec2(origin.x + (visibleSize.width / 2) - (labelselectL->getContentSize().width / 2) - buttonselectL->getContentSize().width,
         origin.y + (visibleSize.height) / 2));
     buttonselectL->setPressedActionEnabled(true);
-    buttonselectL->addTouchEventListener(CC_CALLBACK_2(Level3_1::buttonselectLCallback, this));
+    buttonselectL->addTouchEventListener(CC_CALLBACK_2(Level4_1::buttonselectLCallback, this));
     this->addChild(buttonselectL, 0, 4);
 
     auto labelBack = Label::createWithTTF("go back to the start menu", "fonts/Marker Felt.ttf", 60);
@@ -187,14 +192,14 @@ void Level3_1::Pausemenu()
     buttonBack->setPosition(Vec2(origin.x + (visibleSize.width / 2) - (labelBack->getContentSize().width / 2) - buttonBack->getContentSize().width,
         origin.y + (visibleSize.height) / 2 - 2 * labelBack->getContentSize().height));
     buttonBack->setPressedActionEnabled(true);
-    buttonBack->addTouchEventListener(CC_CALLBACK_2(Level3_1::buttonbackCallback, this));
+    buttonBack->addTouchEventListener(CC_CALLBACK_2(Level4_1::buttonbackCallback, this));
     this->addChild(buttonBack, 0, 6);
 
 
 
 }
 //去选择关卡界面
-void Level3_1::buttonselectLCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
+void Level4_1::buttonselectLCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED) {
         AudioEngine::stopAll();
@@ -205,7 +210,7 @@ void Level3_1::buttonselectLCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::Tou
     return;
 }
 //游戏继续
-void Level3_1::buttoncontinueCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
+void Level4_1::buttoncontinueCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
     AudioEngine::resumeAll();
     listener->setEnabled(true);
@@ -218,7 +223,7 @@ void Level3_1::buttoncontinueCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::To
     this->removeChildByTag(7);
 }
 //去主菜单
-void Level3_1::buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
+void Level4_1::buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
     {
@@ -239,7 +244,7 @@ void Level3_1::Fire(cocos2d::Vec2 origin, float angle, float speed) {
     }
     lastFireTime = cocos2d::Director::getInstance()->getTotalFrames() / 60;
 }
-int Level3_1::getType(Vec2 pos)
+int Level4_1::getType(Vec2 pos)
 {
     float x = (pos.x - offsetX) / tileSize / scale;
     float y = (mapy - 1) - (pos.y - offsetY) / tileSize / scale;
@@ -545,7 +550,7 @@ void Level3_1::willContactOther(Vec2 vec)
     }
     return;
 }
-void Level3_1::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
+void Level4_1::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
     Keystate[keyCode] = true;
     switch (keyCode) {
     case cocos2d::EventKeyboard::KeyCode::KEY_A:
@@ -577,7 +582,7 @@ void Level3_1::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Ev
         break;
     }
 }
-void Level3_1::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
+void Level4_1::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
     Keystate[keyCode] = false;
     if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_A]) {
         tank->setRotation(-90.0f);
@@ -879,10 +884,10 @@ bool Level3_1::init()
 
 
     //add keyboard listenser below
-    listener->onKeyPressed = CC_CALLBACK_2(Level3_1::onKeyPressed, this);
-    listener->onKeyReleased = CC_CALLBACK_2(Level3_1::onKeyReleased, this);
+    listener->onKeyPressed = CC_CALLBACK_2(Level4_1::onKeyPressed, this);
+    listener->onKeyReleased = CC_CALLBACK_2(Level4_1::onKeyReleased, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
-    Level3_1::scheduleUpdate();
+    Level4_1::scheduleUpdate();
     return true;
 }

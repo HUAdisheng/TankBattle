@@ -832,6 +832,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Level\Classes\Level3_1.h" />
     <ClInclude Include="..\Classes\Bullet.h" />
     <ClInclude Include="..\Classes\FirstScene.h" />
     <ClInclude Include="..\Classes\Level1_1.h" />
@@ -842,6 +843,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="C:\solution\TankBattle\Classes\HelloWorldScene.h" />
     <ClInclude Include="C:\solution\TankBattle\proj.win32\main.h" />
     <ClInclude Include="C:\solution\TankBattle\proj.win32\resource.h" />
+    <ClCompile Include="..\..\Level\Classes\Level3_1.cpp" />
     <ClCompile Include="..\Classes\Bullet.cpp" />
     <ClCompile Include="..\Classes\FirstScene.cpp" />
     <ClCompile Include="..\Classes\Level1_1.cpp" />

@@ -747,6 +747,7 @@ void Level7_1::willContactOther(Vec2 vec)
             }
             map[1][10] = 38;
             physicsbody[1][11]->setVisible(false);
+            physicsbody[1][10]->setVisible(true);
             break;
         case 57:
             for(int i=3;i<=5;i++)
@@ -1055,6 +1056,8 @@ bool Level7_1::init()
             }
             else if (map[y][x] == 4) {
                 physicsbody[y][x] = Sprite::create("4.png");
+                if (y == 1 && x == 10)
+                    physicsbody[1][10]->setVisible(false);
             }
             else if (map[y][x] == 5||map[y][x]==25) {
                 physicsbody[y][x] = Sprite::create("5.png");

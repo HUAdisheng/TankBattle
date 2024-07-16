@@ -412,7 +412,7 @@ void Level6_1::ContactBullet()
             }
         }
         else if (Boss->getBoundingBox().intersectsRect(m_bullet[i]->getBoundingBox()) && m_bullet[i]->gettype() == 1) {
-            m_bullet[i]->setVisible(false);
+            m_bullet[i]->deletebullet();
             m_bullet.erase(m_bullet.begin() + i);
             Bosslife--;                                                     
             bossspeed += 1.5f;

@@ -547,6 +547,8 @@ bool Level7_1::willContactBullet(Bullet* bullet)
                 return true;
             case 108:
                 return true;
+            case 5:
+                return true;
             default:
                 continue;
             }
@@ -774,7 +776,7 @@ void Level7_1::willContactOther(Vec2 vec)
             physicsbody[16][17]->setTexture(Director::getInstance()->getTextureCache()->addImage("107.png"));
             physicsbody[16][20]->setTexture(Director::getInstance()->getTextureCache()->addImage("107.png"));
             physicsbody[8][17]->setVisible(false);
-            if(physicsbody[4][18]->isVisible()==false)
+            if(physicsbody[11][10]->isVisible()==false)
                 
                 map[16][17] = 888;
             break;

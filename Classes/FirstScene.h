@@ -6,7 +6,9 @@
 #include<iostream>
 #include<fstream>
 #include<string>
-enum KeyState {
+
+enum KeyState 
+{
     KEY_A_PRESSED,
     KEY_S_PRESSED,
     KEY_D_PRESSED,
@@ -14,6 +16,7 @@ enum KeyState {
     KEY_J_PRESSED,
     KEY_P_PRESSED
 };
+
 class FirstScene : public cocos2d::Scene
 {
 public:

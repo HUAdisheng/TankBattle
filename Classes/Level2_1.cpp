@@ -1,9 +1,11 @@
 #include "Level2_1.h"
 USING_NS_CC;
+
 Scene* Level2_1::createScene()
 {
     return Level2_1::create();
 }
+
 Vec2 Level2_1::calculation(Tank* tank) {
     auto newPosition = tank->getPosition();
     auto r = tank->getRotation();
@@ -23,11 +25,13 @@ Vec2 Level2_1::calculation(Tank* tank) {
     }
     return newPosition;
 }
+
 static void problemLoading(const char* filename)
 {
     printf("Error while loading: %s\n", filename);
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
+
 void Level2_1::Pausemenu()
 {
     listener->setEnabled(false);
@@ -121,6 +125,7 @@ void Level2_1::Pausemenu()
 
 
 }
+
 //去选择关卡界面
 void Level2_1::buttonselectLCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
@@ -132,6 +137,7 @@ void Level2_1::buttonselectLCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::Tou
     }
     return;
 }
+
 //游戏继续
 void Level2_1::buttoncontinueCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
@@ -145,6 +151,7 @@ void Level2_1::buttoncontinueCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::To
     this->removeChildByTag(6);
     this->removeChildByTag(7);
 }
+
 //去主菜单
 void Level2_1::buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
@@ -157,6 +164,7 @@ void Level2_1::buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchE
     }
     return;
 }
+
 void Level2_1::Fire(cocos2d::Vec2 origin, float angle, float speed) {
     if (cocos2d::Director::getInstance()->getTotalFrames() / 60 - lastFireTime >= 1.0f||m_bullet.size()<=2) {
         m_bullet.push_back(Bullet::create("bullet.png"));
@@ -167,6 +175,7 @@ void Level2_1::Fire(cocos2d::Vec2 origin, float angle, float speed) {
     }
     lastFireTime = cocos2d::Director::getInstance()->getTotalFrames() / 60;
 }
+
 int Level2_1::getType(Vec2 pos)
 {
     float x = (pos.x - offsetX) / tileSize / scale;
@@ -178,7 +187,8 @@ int Level2_1::getType(Vec2 pos)
     ix = (int)x;
     iy = (int)y;
 
-    switch (map[iy + 1][ix]) {
+    switch (map[iy + 1][ix])
+    {
     case 1:
         return 1;
     case 2:
@@ -206,6 +216,7 @@ int Level2_1::getType(Vec2 pos)
         return 0;
     }
 }
+
 bool Level2_1::willContact(Vec2 vec)
 {
     // 获取坦克位置信息与尺寸
@@ -236,6 +247,7 @@ bool Level2_1::willContact(Vec2 vec)
     }
     return false;
 }
+
 void Level2_1::willContactTrap(Vec2 vec)
 {
     // 获取坦克位置信息与尺寸
@@ -255,7 +267,9 @@ void Level2_1::willContactTrap(Vec2 vec)
     point[1] = Vec2(MinX + vec.x, MaxY + vec.y);
     point[2] = Vec2(MaxX + vec.x, MinY + vec.y);
     point[3] = Vec2(MaxX + vec.x, MaxY + vec.y);
-    for (int i = 0; i < 4; i++) {
+    
+    for (int i = 0; i < 4; i++) 
+    {
         switch (getType(point[i]))
         {
         case 1:
@@ -268,19 +282,22 @@ void Level2_1::willContactTrap(Vec2 vec)
             physicsbody[iy+1][ix] = sprite;
             this->addChild(sprite);
             again();
-            if (!physicsbody[12][2]->isVisible()) {
+            if (!physicsbody[12][2]->isVisible()) 
+            {
                 dategold();
             }
             return ;
         case 2:
             again();
-            if (!physicsbody[12][2]->isVisible()) {
+            if (!physicsbody[12][2]->isVisible()) 
+            {
                 dategold();
             }
             return ;
         case 3:
             again();
-            if (!physicsbody[12][2]->isVisible()) {
+            if (!physicsbody[12][2]->isVisible()) 
+            {
                 dategold();
             }
             physicsbody[iy + 1][ix]->setVisible(true);
@@ -289,7 +306,8 @@ void Level2_1::willContactTrap(Vec2 vec)
             physicsbody[iy + 1][ix]->setVisible(false);
             map[iy + 1][ix] = 30;
             target++;
-            if (target == 4) {
+            if (target == 4) 
+            {
                 physicsbody[1][13]->setVisible(true);
             }
             return ;
@@ -304,7 +322,8 @@ void Level2_1::willContactTrap(Vec2 vec)
         case 4:
             ison = true;
             return ;
-        case 11:if (physicsbody[12][2]->isVisible()) {
+        case 11:if (physicsbody[12][2]->isVisible()) 
+        {
             AudioEngine::stopAll();
             auto hello = Level3_1::createScene();
             TransitionFade* trs = TransitionFade::create(1.0, hello);
@@ -312,14 +331,16 @@ void Level2_1::willContactTrap(Vec2 vec)
         }
             return ;
         case 12:
-            if (!physicsbody[12][2]->isVisible()) {
+            if (!physicsbody[12][2]->isVisible()) 
+            {
                 again();
                 dategold();
                 physicsbody[iy + 1][ix]->setVisible(true);
             }
             return ;
         case 13:
-            if (physicsbody[12][2]->isVisible()) {
+            if (physicsbody[12][2]->isVisible()) 
+            {
                 again();
                 physicsbody[iy + 1][ix]->setVisible(true);
             }
@@ -330,20 +351,25 @@ void Level2_1::willContactTrap(Vec2 vec)
     }
     return ;
 }
+
 void Level2_1::ContactBullet()
 {
-    for (int i = 0; i < m_bullet.size(); i++) {
-        if (willContactBullet( m_bullet[i])) {
+    for (int i = 0; i < m_bullet.size(); i++) 
+    {
+        if (willContactBullet( m_bullet[i])) 
+        {
             Vec2 pos = m_bullet[i]->getPosition();
             destroyMap(m_bullet[i]);
             m_bullet[i]->deletebullet();
             m_bullet.erase(m_bullet.begin() + i);
         }
-        else if (tank->getBoundingBox().intersectsRect(m_bullet[i]->getBoundingBox())) {
+        else if (tank->getBoundingBox().intersectsRect(m_bullet[i]->getBoundingBox())) 
+        {
             m_bullet[i]->deletebullet();
             m_bullet.erase(m_bullet.begin() + i);
             again();
-            if (!physicsbody[12][2]->isVisible()) {
+            if (!physicsbody[12][2]->isVisible()) 
+            {
                 dategold();
             }
         }
@@ -363,6 +389,7 @@ void Level2_1::ContactBullet()
         }*/
     }
 }
+
 bool Level2_1::willContactBullet(Bullet* bullet)
 {
     // 获取子弹位置信息与尺寸
@@ -379,8 +406,10 @@ bool Level2_1::willContactBullet(Bullet* bullet)
     point[1] = Vec2(MinX, MaxY);
     point[2] = Vec2(MaxX, MinY);
     point[3] = Vec2(MaxX, MaxY);
-    for (int i = 0; i < 4; i++) {
-        switch (getType(point[i])) {
+    for (int i = 0; i < 4; i++)
+    {
+        switch (getType(point[i])) 
+        {
         case 2:
             return true;
         case 6:
@@ -395,6 +424,7 @@ bool Level2_1::willContactBullet(Bullet* bullet)
     }
     return false;
 }
+
 void Level2_1::destroyMap(Bullet* bullet)
 {
     Rect rect = bullet->getBoundingBox();
@@ -413,14 +443,16 @@ void Level2_1::destroyMap(Bullet* bullet)
     point[1] = Vec2(MinX, MaxY);
     point[2] = Vec2(MaxX, MinY);
     point[3] = Vec2(MaxX, MaxY);
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++) 
+    {
         float x = (point[i].x - offsetX) / tileSize / scale;
         float y = (mapy - 1) - (point[i].y - offsetY) / tileSize / scale;
         if (y > 0)
             y++;
         int ix = (int)x;
         int iy = (int)y;
-        switch (map[iy][ix]) {
+        switch (map[iy][ix])
+        {
             // 此处根据方块类型执行方块摧毁的操作 
        
 
@@ -441,7 +473,8 @@ void Level2_1::destroyMap(Bullet* bullet)
             break;
         case 10:
             again();
-            if (!physicsbody[12][2]->isVisible()) {
+            if (!physicsbody[12][2]->isVisible()) 
+            {
                 dategold();
             }
             break;
@@ -450,9 +483,12 @@ void Level2_1::destroyMap(Bullet* bullet)
         }
     }
 }
-void Level2_1::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
+
+void Level2_1::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) 
+{
     Keystate[keyCode] = true;
-    switch (keyCode) {
+    switch (keyCode) 
+    {
     case cocos2d::EventKeyboard::KeyCode::KEY_A:
         ks = KEY_A_PRESSED;
         tank->setRotation(-90.0f);
@@ -482,26 +518,35 @@ void Level2_1::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Ev
         break;
     }
 }
-void Level2_1::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
+
+
+void Level2_1::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) 
+{
     Keystate[keyCode] = false;
-    if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_A]) {
+    if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_A]) 
+    {
         tank->setRotation(-90.0f);
         ks = KEY_A_PRESSED;
     }
-    else if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_S]) {
+    else if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_S])
+    {
         tank->setRotation(180.0f);
         ks = KEY_S_PRESSED;
     }
-    else if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_D]) {
+    else if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_D])
+    {
         tank->setRotation(90.0f);
         ks = KEY_D_PRESSED;
     }
-    else if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_W]) {
+    else if (Keystate[cocos2d::EventKeyboard::KeyCode::KEY_W]) 
+    {
         tank->setRotation(0.0f);
         ks = KEY_W_PRESSED;
     }
 }
-void Level2_1::update(float delta) {
+
+void Level2_1::update(float delta) 
+{
     this->delta = delta;
     bool staticflag = false;
     bool staticflag2 = false;
@@ -512,8 +557,10 @@ void Level2_1::update(float delta) {
     {
         tank->stopmoving();
     }
-    else {
-        switch (ks) {
+    else 
+    {
+        switch (ks) 
+        {
         case KEY_A_PRESSED:
             staticflag = willContact(Vec2(-2.5f, 0));
             
@@ -541,18 +588,22 @@ void Level2_1::update(float delta) {
             break;
         }
     }
+
     ContactBullet();
     tank->update(delta, staticflag);
     willContactTrap(Vec2(0,0));
     
-    if (ison) {
+    if (ison) 
+    {
         elapsedTime += delta;
-        if (elapsedTime >= 1.0f) {
+        if (elapsedTime >= 1.0f) 
+        {
             elapsedTime = 0.0f;
             this->Fire(Vec2(physicsbody[0][11]->getBoundingBox().getMidX(), physicsbody[0][11]->getPosition().y - 30), -90.0f, 1000);
         }
     }
 }
+
 bool Level2_1::init()
 {
         if (!Scene::init())

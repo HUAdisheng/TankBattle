@@ -1,14 +1,17 @@
 #include "LevelSelect.h"
 USING_NS_CC;
+
 Scene* LevelSelected::createScene()
 {
     return LevelSelected::create();
 }
+
 static void problemLoading(const char* filename)
 {
     printf("Error while loading: %s\n", filename);
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
+
 //去1-10关
 void LevelSelected::button1Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
@@ -21,6 +24,7 @@ void LevelSelected::button1Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::Touc
     }
     return;
 }
+
 void LevelSelected::button2Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
@@ -32,6 +36,7 @@ void LevelSelected::button2Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::Touc
     }
     return;
 }
+
 void LevelSelected::button3Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
@@ -43,6 +48,7 @@ void LevelSelected::button3Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::Touc
     }
     return;
 }
+
 void LevelSelected::button4Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
@@ -54,6 +60,7 @@ void LevelSelected::button4Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::Touc
     }
     return;
 }
+
 void LevelSelected::button5Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
@@ -65,6 +72,7 @@ void LevelSelected::button5Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::Touc
     }
     return;
 }
+
 void LevelSelected::button6Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
@@ -76,6 +84,7 @@ void LevelSelected::button6Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::Touc
     }
     return;
 }
+
 void LevelSelected::button7Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
@@ -87,6 +96,7 @@ void LevelSelected::button7Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::Touc
     }
     return;
 }
+
 void LevelSelected::button8Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
@@ -98,6 +108,7 @@ void LevelSelected::button8Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::Touc
     }
     return;
 }
+
 void LevelSelected::button9Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
@@ -109,6 +120,7 @@ void LevelSelected::button9Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::Touc
     }
     return;
 }
+
 void LevelSelected::button10Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
     if (type == cocos2d::ui::Widget::TouchEventType::ENDED)
@@ -120,6 +132,7 @@ void LevelSelected::button10Callback(cocos2d::Ref* ref, cocos2d::ui::Widget::Tou
     }
     return;
 }
+
 //返回主菜单
 void LevelSelected::buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::TouchEventType type)
 {
@@ -132,6 +145,7 @@ void LevelSelected::buttonbackCallback(cocos2d::Ref* ref, cocos2d::ui::Widget::T
     }
     return;
 }
+
 bool LevelSelected::init()
 {
     if (!Scene::init())
@@ -185,6 +199,7 @@ bool LevelSelected::init()
         // add the label as a child to this layer
         this->addChild(label1);
     }
+
     std::ifstream file;
     file.open("level.txt");
     std::string s = "0";
@@ -200,6 +215,7 @@ bool LevelSelected::init()
     
     auto label2 = Label::createWithTTF("Level 2", "fonts/Marker Felt.ttf", 60);
     label2->setTextColor(Color4B(Color3B(255, 255, 128)));
+    
     if (label2 == nullptr)
     {
         problemLoading("'fonts/Marker Felt.ttf'");
@@ -225,6 +241,7 @@ bool LevelSelected::init()
  
     auto label3 = Label::createWithTTF("Level 3", "fonts/Marker Felt.ttf", 60);
     label3->setTextColor(Color4B(Color3B(255, 255, 128)));
+    
     if (label3 == nullptr)
     {
         problemLoading("'fonts/Marker Felt.ttf'");

@@ -666,10 +666,7 @@ void Level6_1::update(float delta) {
   
    
     if (Bosslife <= 0) {
-        AudioEngine::stopAll();
-        auto hello = Level7_1::createScene();
-        TransitionFade* trs = TransitionFade::create(1.0, hello);
-        Director::getInstance()->replaceScene(trs);
+        event_win();
     } 
     if (Bosslife <= 200) {
         Boss->setTexture("boss2.png");
